@@ -64,17 +64,15 @@ const LoginSection = () => {
     }
     const handleSubmit = (evt) => {
         evt.preventDefault();
-        // console.log(evt.target.username.value);
-        // console.log(evt.target.password.value);
         axios.post("http://localhost:8000/api/auth/login/",{
-            "email": evt.target.username.value, 
+            "email": evt.target.email.value, 
             "password": evt.target.password.value,
         }).then(res => {
             saveJWTinCookie(res.data.data.access_token);
             navigate("/marketplace");
         }).catch(err => {
-            console.log(err.response.data.message);
-            setErrMsg(err.response.data.message)
+            console.log(err);
+            // setErrMsg(err.response.message)
         });
 
     };
@@ -83,14 +81,14 @@ const LoginSection = () => {
         <form method="POST" onSubmit={handleSubmit} className="form-container" id="login-form">
             <h2>Account Login</h2>
             {/* Username Input */}
-            <label className="label-form" htmlFor="username">Username</label>
+            <label className="label-form" htmlFor="email">Email</label>
             <input className="ipt-form"
                 type="text"
-                placeholder="Username"
-                value={formData.username}
+                placeholder="email@xyz.com"
+                value={formData.email}
                 onChange={handleChange}
-                name="username"
-                id="username"
+                name="email"
+                id="email"
             />
             {/* Password Input */}
             <label className="label-form" htmlFor="password">Password</label>
