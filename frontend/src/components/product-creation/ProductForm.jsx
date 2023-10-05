@@ -10,9 +10,13 @@ import Input from "../common/Input";
 import "./ProductForm.css"
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import {useCookies} from "react-cookie";
 
 // ProductForm component definition
 function ProductForm() {
+    const [errMsg, setErrMsg] = useState("");
+    const [cookies, setCookie] = useCookies(["user"]);
     // Hook to navigate between routes
     const navigate = useNavigate();
 
@@ -30,9 +34,27 @@ function ProductForm() {
         setFile(url);
         console.log(url);
     }
-
+    const handleSubmit = (evt) =>{
+        evt.preventDefault();
+        // navigate("/marketplace");
+        console.log(cookies);
+        const config = {
+            headers: { Authorization: `Bearer ${cookies.jwt_token}` }
+        };
+        axios.post("http://localhost:8000/api/assets/",{
+            "name": evt.target.name.value, 
+            "price": evt.target.price.value,
+            "description": evt.target.description.value,
+            "category": "a",
+        }, config).then(res => {
+            console.log(res)
+        }).catch(err => {
+            console.log(err.response.data.message);
+            setErrMsg(err.response.data.message)
+        });
+    }
     return (
-        <form className="product-form" encType="multipart/form-data">
+        <form onSubmit={handleSubmit} method="POST" className="product-form">
             {/* Display the uploaded image if available */}
             {file ? <img onClick={() => imageInputRef.current.click()} className="image-input" src={file} alt="preview" /> : ""}
             {/* Image input field */}
@@ -40,11 +62,11 @@ function ProductForm() {
 
             {/* Text input fields for product details */}
             <div className="text-input">
-                <Input type="text" name="name" label="Name" />
-                <Input type="text" name="description" label="Description" />
-                <Input type="number" name="price" label="Price" />
+                <Input type="text" name="name" label="Name" required />
+                <Input type="text" name="description" label="Description" required/>
+                <Input type="number" name="price" label="Price" required/>
                 {/* Submit button to navigate to the marketplace */}
-                <input onClick={() => navigate("/marketplace")} type="submit" name="sell-button" value="Sell" />
+                <button  type="submit" name="sell-button">Sell</button>
             </div>
         </form>
     );

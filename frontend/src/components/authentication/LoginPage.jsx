@@ -5,12 +5,15 @@ StudentId: 103509199
 last date modified: 03/09/2023
 */
 // Importing necessary modules and components
-import React, { useState } from "react";  // Combined the React and useState imports
+import React, { useState, useEffect } from "react";  // Combined the React and useState imports
+import { useNavigate } from "react-router-dom";
 import Introduction from "./Introduction";
 import LoginSection from "./LoginSection";
 import Register from "./Register";
 import "./LoginPage.css";
 import cards from "../../assets/cards.png";
+import {CookiesProvide, useCookies} from "react-cookie";
+
 
 /**
  * LoginPage Component
@@ -19,6 +22,16 @@ import cards from "../../assets/cards.png";
 const LoginPage = () => {
     // State to manage the active button (authentication or register)
     const [activeButton, setActiveButton] = useState("authentication");
+    const [cookies, setCookie] = useCookies(["user"]);
+    const navigate = useNavigate();
+    const isAuthenticated = () => {
+        return cookies.jwt_token ? true : false;
+    };
+    useEffect(() => {
+        if (isAuthenticated()) {
+            navigate("/marketplace");  // Redirect to the dashboard or desired page
+        }
+    }, [cookies.jwt_token]);
 
     // Function to update the active form based on user interaction
     const handleButtonClick = (buttonName) => {

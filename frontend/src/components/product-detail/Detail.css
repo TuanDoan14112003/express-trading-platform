@@ -51,7 +51,18 @@ last date modified: 03/09/2023
     flex: 1; /* Allows the container to grow and take up available space */
     order: 1; /* Position in the flex container */
 }
-
+.center-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;  /* Full height of the viewport */
+    margin: 0;      /* Removing default body margin */
+}
+.error-message{
+    color: white;
+    margin-left: 5px;
+    font-size: 2rem;
+}
 /* 
    Media query for mobile screens.
    Adjusts the layout and styling for screens with a maximum width of 480px.

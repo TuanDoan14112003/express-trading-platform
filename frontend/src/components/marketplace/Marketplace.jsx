@@ -6,10 +6,11 @@ Last date modified: 02/09/2023
  */
 import "./Marketplace.css";
 import FilterIcon from "../../assets/filter.svg";
+import LoadingSpinner from "../common/LoadingSpinner";
 import ProductList from "./ProductList";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import Filter from "../common/Filter";
-
+import axios from 'axios';
 const productList = [ // Sample product list data
     {
         id: 1,
@@ -63,7 +64,32 @@ const productList = [ // Sample product list data
 function Marketplace() {
     // State to manage the visibility of the filter
     const [isFilterClicked, setFilterClicked] = useState(false);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    useEffect(() => {
+        // The API endpoint
+        const apiUrl = 'http://localhost:8000/api/assets/';
+        axios.get(apiUrl)
+            .then(response => {
+                setData(response.data.data.digital_assets);
+                setLoading(false);
+                console.log(data);
+            })
+            .catch(err => {
+                setError(err);
+                setLoading(false);
+                console.log(err);
+            });
+    }, []); // Empty dependency array means this useEffect runs once when component mounts
 
+    if(loading)
+    {
+        return  <div className="center-screen">
+                    <LoadingSpinner/>
+                    <h1>Loading ...</h1>
+                </div>;
+    }
     return (
         // Main container for the marketplace
         <div className="marketplace">
@@ -75,7 +101,8 @@ function Marketplace() {
                     <img className="icon-filter" onClick={() => setFilterClicked(true)} src={FilterIcon} alt="Filter Icon" />
                 </div>
                 {/* Rendering the list of products */}
-                <ProductList productList={productList} />
+                {loading && <p>Loading...</p>}
+                {!loading && <ProductList productList={data} />}
             </div>
             {/* Filter component */}
             <Filter clicked={isFilterClicked} setFilter={setFilterClicked} />

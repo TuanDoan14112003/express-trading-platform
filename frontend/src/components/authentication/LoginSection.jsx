@@ -5,10 +5,11 @@ StudentId: 103509199
 last date modified: 03/09/2023
 */
 // Required Libraries and Modules
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./LoginSection.css";
 import { Link, useNavigate } from "react-router-dom";
-
+import {CookiesProvide, useCookies} from "react-cookie";
+import axios from 'axios';
 /**
  * LoginSection Component
  * 
@@ -24,6 +25,9 @@ const LoginSection = () => {
         password: "",
         rememberMe: false,
     });
+    const [errMsg, setErrMsg] = useState("");
+    const [cookies, setCookie] = useCookies(["user"]);
+
 
     /**
      * Handle input changes and update the formData state.
@@ -42,16 +46,41 @@ const LoginSection = () => {
         setFormData(prevState => ({ ...prevState, rememberMe: !prevState.rememberMe }));
     };
 
+    const saveJWTinCookie = (token)=>{
+        const expiryDate = new Date('Sat Oct 07 2023 11:59:59 UTC');
+        setCookie('jwt_token', token, {
+            expires: expiryDate,
+            path: '/',
+        })
+    }
+
     /**
      * Handle the form submission.
      * For the purpose of this example, it redirects the user to the marketplace.
      */
-    const handleSubmit = () => {
-        navigate("/marketplace");
+    let user = {
+        "email": "tuandoan14112003@gmail.com",
+        "password": "12345678"
+    }
+    const handleSubmit = (evt) => {
+        evt.preventDefault();
+        // console.log(evt.target.username.value);
+        // console.log(evt.target.password.value);
+        axios.post("http://localhost:8000/api/auth/login/",{
+            "email": evt.target.username.value, 
+            "password": evt.target.password.value,
+        }).then(res => {
+            saveJWTinCookie(res.data.data.access_token);
+            navigate("/marketplace");
+        }).catch(err => {
+            console.log(err.response.data.message);
+            setErrMsg(err.response.data.message)
+        });
+
     };
 
     return (
-        <div className="form-container" id="login-form">
+        <form method="POST" onSubmit={handleSubmit} className="form-container" id="login-form">
             <h2>Account Login</h2>
             {/* Username Input */}
             <label className="label-form" htmlFor="username">Username</label>
@@ -73,6 +102,7 @@ const LoginSection = () => {
                 id="password"
                 name="password"
             />
+            {errMsg !== "" && <p className="error-notice">{errMsg}</p>}
             {/* Remember Me Checkbox and Forgot Password Link */}
             <div className="wrapper-option">
                 <div className="remember">
@@ -85,11 +115,12 @@ const LoginSection = () => {
                     />
                     <label htmlFor="rememberMe">Remember me</label>
                 </div> 
+                
                 <Link to="/login">Forgot Password?</Link>
             </div>
             {/* Login Button */}
-            <button className="btn-submit" onClick={handleSubmit}>Login to your account</button>
-        </div>
+            <button type ="submit" className="btn-submit" > login</button>
+        </form>
     );
 }
 
