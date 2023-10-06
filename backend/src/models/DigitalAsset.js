@@ -33,7 +33,7 @@ class DigitalAsset {
     }
 
     static getAllDigitalAssets(callback) {
-        db.query("Select asset_id,name,price,description,category,owner_id FROM DigitalAssets",
+        db.query("Select asset_id,name,price,description,category,owner_id, creation_date, is_available FROM DigitalAssets",
             (err, res) => {
                 if (err) {
                     console.log(err);
@@ -45,7 +45,7 @@ class DigitalAsset {
     }
 
     static getOneDigitalAsset(digitalAssetId,callback) {
-        db.query(`Select asset_id,name,price,description,category,owner_id FROM DigitalAssets WHERE asset_id='${digitalAssetId}'`,
+        db.query(`Select asset_id,name,price,description,category,owner_id, creation_date, is_available FROM DigitalAssets WHERE asset_id='${digitalAssetId}'`,
             (err, res) => {
                 if (err) {
                     console.log(err);
