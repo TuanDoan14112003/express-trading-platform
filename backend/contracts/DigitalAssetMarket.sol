@@ -101,6 +101,11 @@ contract DigitalAssetMarket {
         return transactionHistory[userId];
     }
 
+    function changeAvailability(uint256 assetId, bool value) public {
+        require(userWallets[msg.sender] == digitalAssets[assetId].ownerId);
+        digitalAssets[assetId].isAvailable = value;
+    }
+
     function removeValueFromArray(uint256[] storage arr, uint256 value) private {
         for (uint256 i = 0; i < arr.length; i++) {
             if (arr[i] == value) {

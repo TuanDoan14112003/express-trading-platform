@@ -69,7 +69,6 @@ exports.getOneDigitalAsset = (req,res) => {
                 message: "cannot find the digital asset"
             })
         }
-
         return res.status(200).json({
             status: "success",
             data : {

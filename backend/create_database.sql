@@ -17,12 +17,6 @@ CREATE TABLE Users (
 );
 
 
--- DROP TABLE IF EXISTS Categories;
--- CREATE TABLE Categories (
---     category_name VARCHAR(255) NOT NULL PRIMARY KEY,
---     description VARCHAR(255)                  -- Description of the category
--- );
-
 DROP TABLE IF EXISTS DigitalAssets;
 CREATE TABLE DigitalAssets (
     asset_id  INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,11 +26,11 @@ CREATE TABLE DigitalAssets (
     price DECIMAL NOT NULL,
     category VARCHAR(255) NOT NULL,
     image_url VARCHAR(500),
+    creation_date DATE NOT NULL DEFAULT (CURRENT_DATE),
+    is_available BOOLEAN NOT NULL DEFAULT 1,
     FOREIGN KEY (owner_id) REFERENCES Users(user_id)
 
---     FOREIGN KEY (category) REFERENCES Categories(category_name)
 );
-
 
 
 DROP USER IF EXISTS 'trading-platform-admin'@'localhost';
