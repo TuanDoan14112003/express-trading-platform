@@ -19,6 +19,6 @@
     display: grid;
     justify-content: center;
     align-items: center;
-    height: 350px;
-    margin-right: 5px;
+    margin: 10px;
+    /* margin-right: 5px; */
   }

@@ -26,7 +26,7 @@ const Register = () => {
     const [formData, setFormData] = useState({
         firstname: "",
         lastname: "",
-        username: "",
+        email: "",
         password: "",
         confirmPassword: "",
     });
@@ -50,46 +50,27 @@ const Register = () => {
     const handleSubmit = (evt) => {
         evt.preventDefault();
         setSuccessMsg("");
-        if(evt.target.username.value == "")
-        {
-            setErrMsg("Username must not be left blank");
-        }
-        if(evt.target.firstname.value == "")
-        {
-            setErrMsg("First name must not be left blank");
-        }
-        if(evt.target.password.value == "" )
-        {
-            setErrMsg("Password must not be left blank");
-        }
-        if(evt.target.password.value != evt.target.confirmPassword.value)
-        {
-            setErrMsg("Password does not match");
-        }
-        if(evt.target.username.value != "" && evt.target.firstname.value != "" && evt.target.password.value != "" && evt.target.password.value == evt.target.confirmPassword.value)
+       
+        if(evt.target.password.value == evt.target.confirmPassword.value)
         {
             setErrMsg("");
             axios.post("http://localhost:8000/api/auth/register/",{
-                "firstName": evt.target.firstname.value,
-                "lastName": evt.target.lastname.value,
-                "email": evt.target.username.value, 
+                "first_name": evt.target.firstname.value,
+                "last_name": evt.target.lastname.value,
+                "email": evt.target.email.value, 
                 "password": evt.target.password.value,
             }).then(res => {
                 console.log(res)
                 setSuccessMsg("Register Successfully!")
             }).catch(err => {
                 console.log(err);
-                setErrMsg("Please try again with a different username")
+                setErrMsg(err.response.data.message);
             });
         }
-        // axios.post("http://localhost:8000/api/auth/login/",{
-        //     "email": evt.target.username.value, 
-        //     "password": evt.target.password.value,
-        // }).then(res => {
-        //     console.log(res)
-        // }).catch(err => {
-        //     console.log(err.response.data.message);
-        // });
+        else{
+            setErrMsg("Passwords do not match")
+        }
+
     };
 
     return (
@@ -114,14 +95,14 @@ const Register = () => {
                 id="lastname"
             />
             {/* Username Input */}
-            <label className="label-form" htmlFor="username">Username</label>
+            <label className="label-form" htmlFor="email">Email</label>
             <input className="ipt-form"
                 type="text"
-                placeholder="Username"
-                value={formData.username}
+                placeholder="email@xyz.com"
+                value={formData.email}
                 onChange={handleChange}
-                name="username"
-                id="username"
+                name="email"
+                id="email"
             />
             {/* Password Input */}
             <label className="label-form" htmlFor="password">Password</label>

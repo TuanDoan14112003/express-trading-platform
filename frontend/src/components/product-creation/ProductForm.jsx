@@ -65,6 +65,7 @@ function ProductForm() {
                 <Input type="text" name="name" label="Name" required />
                 <Input type="text" name="description" label="Description" required/>
                 <Input type="number" name="price" label="Price" required/>
+                <Input type="text" name="Category" label="Category" required/>
                 {/* Submit button to navigate to the marketplace */}
                 <button  type="submit" name="sell-button">Sell</button>
             </div>

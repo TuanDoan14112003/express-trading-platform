@@ -10,57 +10,9 @@ import LoadingSpinner from "../common/LoadingSpinner";
 import ProductList from "./ProductList";
 import {useState, useEffect} from "react";
 import Filter from "../common/Filter";
+import Error404 from "../../assets/error-404.png";
 import axios from 'axios';
-const productList = [ // Sample product list data
-    {
-        id: 1,
-        title: "Product 1",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 2,
-        title: "Product 2",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 3,
-        title: "Product 3",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 4,
-        title: "Product 4",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 5,
-        title: "Product 5",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 6,
-        title: "Product 6",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 7,
-        title: "Product 7",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 8,
-        title: "Product 8",
-        seller: "Tuan Doan",
-        price: 200
-    },
-]
+
 function Marketplace() {
     // State to manage the visibility of the filter
     const [isFilterClicked, setFilterClicked] = useState(false);
@@ -89,6 +41,12 @@ function Marketplace() {
                     <LoadingSpinner/>
                     <h1>Loading ...</h1>
                 </div>;
+    }
+    if(error){
+        return <div className="center-screen">
+        <img src={Error404} alt="" />
+        <h1>{error.response.data.message}</h1>
+    </div>;
     }
     return (
         // Main container for the marketplace

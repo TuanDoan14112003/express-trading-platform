@@ -10,8 +10,8 @@ import "./NavBar.css"
 import Filter from "./Filter";
 import {Link, useNavigate} from "react-router-dom";
 import {useState, useEffect} from "react";
-import {CookiesProvide, useCookies} from "react-cookie";
-function NavBar() {
+import { useCookies} from "react-cookie";
+function NavBar({authStatus, setAuthStatus}) {
     const [isFilterClicked, setFilterClicked] = useState(false); // State for handling filter click
     const [isMenuActive,setMenuActive] = useState(false); // State for handling mobile menu activation
     const [bgColor, setBgColor] = useState('transparent');  // State for handling navbar background color on scroll
@@ -19,11 +19,11 @@ function NavBar() {
     const isAuthenticated = () => {
         return cookies.jwt_token ? true : false;
     };
-    const [authStatus, setAuthStatus] = useState(isAuthenticated());
+    // const [authStatus, setAuthStatus] = useState(isAuthenticated());
     const navigate = useNavigate();
-    useEffect(() => {
-        setAuthStatus(isAuthenticated());
-    }, [cookies.jwt_token]);
+    // useEffect(() => {
+    //     setAuthStatus(isAuthenticated());
+    // }, [cookies.jwt_token]);
     
     const HandleLogout = (evt) => {
         evt.preventDefault();

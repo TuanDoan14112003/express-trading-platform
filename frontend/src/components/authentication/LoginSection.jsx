@@ -17,7 +17,7 @@ import axios from 'axios';
  * It contains input fields for the username and password, a "Remember me" checkbox, 
  * and a button to submit the login form.
  */
-const LoginSection = () => {
+const LoginSection = ({authStatus, setAuthStatus}) => {
     // Hooks
     const navigate = useNavigate(); // Hook from react-router for programmatic navigation
     const [formData, setFormData] = useState({
@@ -69,10 +69,12 @@ const LoginSection = () => {
             "password": evt.target.password.value,
         }).then(res => {
             saveJWTinCookie(res.data.data.access_token);
+            setAuthStatus(true);
+            console.log(authStatus);
             navigate("/marketplace");
         }).catch(err => {
-            console.log(err);
-            // setErrMsg(err.response.message)
+            // console.log(err.response.data.message);
+            setErrMsg(err.response.data.message)
         });
 
     };
@@ -102,7 +104,7 @@ const LoginSection = () => {
             />
             {errMsg !== "" && <p className="error-notice">{errMsg}</p>}
             {/* Remember Me Checkbox and Forgot Password Link */}
-            <div className="wrapper-option">
+            {/* <div className="wrapper-option">
                 <div className="remember">
                     <input 
                         type="checkbox" 
@@ -115,7 +117,7 @@ const LoginSection = () => {
                 </div> 
                 
                 <Link to="/login">Forgot Password?</Link>
-            </div>
+            </div> */}
             {/* Login Button */}
             <button type ="submit" className="btn-submit" > login</button>
         </form>
