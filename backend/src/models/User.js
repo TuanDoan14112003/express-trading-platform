@@ -44,7 +44,18 @@ class User {
     }
 
     static findUserByEmail(email, callback) {
-        db.query(`SELECT user_id,email,password FROM Users WHERE email='${email}'`, (err,res) => {
+        db.query(`SELECT user_id,first_name,last_name,email FROM Users WHERE email='${email}'`, (err,res) => {
+            if (err) {
+                console.log(err);
+                callback(err,null);
+                return;
+            }
+            callback(null,  res);
+        })
+    }
+
+    static findUserById(id, callback) {
+        db.query(`SELECT user_id,first_name,last_name,email FROM Users WHERE user_id='${id}'`, (err,res) => {
             if (err) {
                 console.log(err);
                 callback(err,null);
