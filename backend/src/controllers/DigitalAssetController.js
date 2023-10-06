@@ -1,8 +1,10 @@
 const DigitalAsset = require("./../models/DigitalAsset");
 
 exports.createDigitalAsset = async (req,res) => {
+    let assetData = req.body;
+    assetData.owner_id = req.user.id;
     try {
-        await DigitalAsset.getValidationSchema().validateAsync(req.body);
+        await DigitalAsset.getValidationSchema().validateAsync(assetData);
     } catch (error) {
         let errorMessage = error.details.map(err => err.message.replace(/"/g,'')).join(", ");
         return res.status(400).json({
@@ -11,7 +13,7 @@ exports.createDigitalAsset = async (req,res) => {
         })
     }
 
-    const digitalAsset = new DigitalAsset(req.body.name,req.body.description,req.body.category,req.body.price,req.body.owner_id);
+    const digitalAsset = new DigitalAsset(assetData.name,assetData.description,assetData.category,assetData.price,assetData.owner_id);
     DigitalAsset.createDigitalAsset(digitalAsset, (err,data) => {
         if (err) {
             res.status(500).json({
