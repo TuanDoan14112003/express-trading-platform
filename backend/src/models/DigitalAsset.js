@@ -32,8 +32,32 @@ class DigitalAsset {
         })
     }
 
-    static getAllDigitalAssets(callback) {
-        db.query("Select asset_id,name,price,description,category,owner_id, creation_date, is_available FROM DigitalAssets",
+    static getAllDigitalAssets(query,callback) {
+        // TODO: sanitise input
+        console.log(query);
+        con
+        let filter = [];
+        if (query.name) {
+            filter.push(`name LIKE '%${query.name}%'`);
+        }
+        if (query.min) {
+            filter.push(`price >= ${query.min}`);
+        }
+        if (query.max) {
+            filter.push(`price <= ${query.max}`)
+        }
+        if (query.start) {
+            filter.push(`creation_date >= '${query.start}'`);
+        }
+        if (query.end) {
+            filter.push(`creation_date <= '${query.end}'`);
+        }
+        if (query.category) {
+            filter.push(`category LIKE '%${query.category}%'`);
+        }
+        let filterMessage = filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
+        console.log(filterMessage);
+        db.query(`Select asset_id,name,price,description,category,owner_id, creation_date, is_available FROM DigitalAssets ${filterMessage}`,
             (err, res) => {
                 if (err) {
                     console.log(err);

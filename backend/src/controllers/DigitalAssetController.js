@@ -30,7 +30,7 @@ exports.createDigitalAsset = async (req,res) => {
 }
 
 exports.getAllDigitalAssets = (req,res) => {
-    DigitalAsset.getAllDigitalAssets( (err,data) => {
+    DigitalAsset.getAllDigitalAssets(req.query, (err,data) => {
         if (err) {
             return res.status(500).json({
                 status: "error",
