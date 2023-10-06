@@ -16,7 +16,7 @@ function ProductList({productList}) {
             {productList.map((product) => (
                 // The Product component is rendered for each product in the list
                 // Props like 'id', 'title', 'seller', and 'price' are passed to each Product component
-                <Product key={product.asset_id} id={product.asset_id} title={product.name} seller={product.seller} price={product.price} />
+                <Product key={product.asset_id} id={product.asset_id} title={product.name}  price={product.price} />
             ))}
         </div>
     );
