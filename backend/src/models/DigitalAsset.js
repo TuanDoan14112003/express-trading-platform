@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('joi').extend(require('@joi/date'));
 const db = require("./DB");
 
 class DigitalAsset {
@@ -34,26 +34,41 @@ class DigitalAsset {
 
     static getAllDigitalAssets(query,callback) {
         // TODO: sanitise input
-        console.log(query);
-        con
+        const queryValidationSchema = Joi.object({
+            max: Joi.number(),
+            min: Joi.number(),
+            start: Joi.date().format('YYYY-MM-DD').raw(),
+            end: Joi.date().format('YYYY-MM-DD').raw(),
+            category: Joi.string().max(255).truncate().trim(),
+            name: Joi.string().max(255).truncate().trim()
+        });
+
+        const {value: validatedQuery, error} = queryValidationSchema.validate(query);
+        if (error) {
+            console.log(error);
+            callback(error,null);
+            return;
+        }
+        console.log(validatedQuery);
+
         let filter = [];
-        if (query.name) {
-            filter.push(`name LIKE '%${query.name}%'`);
+        if (validatedQuery.name) {
+            filter.push(`name LIKE '%${validatedQuery.name}%'`);
         }
-        if (query.min) {
-            filter.push(`price >= ${query.min}`);
+        if (validatedQuery.min) {
+            filter.push(`price >= ${validatedQuery.min}`);
         }
-        if (query.max) {
-            filter.push(`price <= ${query.max}`)
+        if (validatedQuery.max) {
+            filter.push(`price <= ${validatedQuery.max}`)
         }
-        if (query.start) {
-            filter.push(`creation_date >= '${query.start}'`);
+        if (validatedQuery.start) {
+            filter.push(`creation_date >= '${validatedQuery.start}'`);
         }
-        if (query.end) {
-            filter.push(`creation_date <= '${query.end}'`);
+        if (validatedQuery.end) {
+            filter.push(`creation_date <= '${validatedQuery.end}'`);
         }
-        if (query.category) {
-            filter.push(`category LIKE '%${query.category}%'`);
+        if (validatedQuery.category) {
+            filter.push(`category LIKE '%${validatedQuery.category}%'`);
         }
         let filterMessage = filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
         console.log(filterMessage);

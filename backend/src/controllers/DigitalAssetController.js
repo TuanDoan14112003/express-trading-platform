@@ -1,5 +1,5 @@
 const DigitalAsset = require("./../models/DigitalAsset");
-
+const Joi = require('joi');
 exports.createDigitalAsset = async (req,res) => {
     try {
         await DigitalAsset.getValidationSchema().validateAsync(req.body);
@@ -32,9 +32,16 @@ exports.createDigitalAsset = async (req,res) => {
 exports.getAllDigitalAssets = (req,res) => {
     DigitalAsset.getAllDigitalAssets(req.query, (err,data) => {
         if (err) {
+            if (err instanceof Joi.ValidationError) {
+                let errorMessage = err.details.map(err => err.message.replace(/"/g,'')).join(", ");
+                return res.status(404).json({
+                    status: "fail",
+                    message: errorMessage
+                })
+            }
             return res.status(500).json({
                 status: "error",
-                message: "Server Error: cannot get the digital asset list"
+                message: "cannot get the digital asset list"
             })
         }
         if (data.length === 0) {
