@@ -37,7 +37,6 @@ function ProductForm() {
     const handleSubmit = (evt) =>{
         evt.preventDefault();
         // navigate("/marketplace");
-        console.log(cookies);
         const config = {
             headers: { Authorization: `Bearer ${cookies.jwt_token}` }
         };
@@ -45,11 +44,12 @@ function ProductForm() {
             "name": evt.target.name.value, 
             "price": evt.target.price.value,
             "description": evt.target.description.value,
-            "category": "a",
+            "category": evt.target.category.value,
         }, config).then(res => {
             console.log(res)
         }).catch(err => {
-            console.log(err.response.data.message);
+            console.log(err);
+            // console.log(err.response.data.message);
             setErrMsg(err.response.data.message)
         });
     }
@@ -65,7 +65,8 @@ function ProductForm() {
                 <Input type="text" name="name" label="Name" required />
                 <Input type="text" name="description" label="Description" required/>
                 <Input type="number" name="price" label="Price" required/>
-                <Input type="text" name="Category" label="Category" required/>
+                <Input type="text" name="category" label="Category" required/>
+                {errMsg !== "" && <p className="error-notice">{errMsg}</p>}
                 {/* Submit button to navigate to the marketplace */}
                 <button  type="submit" name="sell-button">Sell</button>
             </div>
