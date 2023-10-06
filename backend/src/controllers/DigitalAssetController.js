@@ -61,7 +61,7 @@ exports.getOneDigitalAsset = (req,res) => {
         if (err) {
             return res.status(500).json({
                 status: "error",
-                message: "Server Error: cannot get the digital asset"
+                message: "cannot get the digital asset"
             })
         }
 
