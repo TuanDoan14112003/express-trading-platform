@@ -37,6 +37,7 @@ function ProductForm() {
     const handleSubmit = (evt) =>{
         evt.preventDefault();
         // navigate("/marketplace");
+        console.log(cookies.jwt_token);
         const config = {
             headers: { Authorization: `Bearer ${cookies.jwt_token}` }
         };
