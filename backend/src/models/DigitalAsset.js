@@ -40,6 +40,9 @@ class DigitalAsset {
                     callback(err,null);
                     return;
                 }
+                for (let row of res) {
+                    row.is_available = !!row.is_available;
+                }
                 callback(null, res);
         })
     }
@@ -51,6 +54,9 @@ class DigitalAsset {
                     console.log(err);
                     callback(err,null);
                     return;
+                }
+                for (let row of res) {
+                    row.is_available = !!row.is_available;
                 }
                 callback(null, res);
             })
