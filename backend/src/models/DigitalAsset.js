@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('joi').extend(require('@joi/date'));
 const db = require("./DB");
 
 class DigitalAsset {
@@ -32,8 +32,47 @@ class DigitalAsset {
         })
     }
 
-    static getAllDigitalAssets(callback) {
-        db.query("Select asset_id,name,price,description,category,owner_id, creation_date, is_available FROM DigitalAssets",
+    static getAllDigitalAssets(query,callback) {
+        // TODO: sanitise input
+        const queryValidationSchema = Joi.object({
+            max: Joi.number(),
+            min: Joi.number(),
+            start: Joi.date().format('YYYY-MM-DD').raw(),
+            end: Joi.date().format('YYYY-MM-DD').raw(),
+            category: Joi.string().max(255).truncate().trim(),
+            name: Joi.string().max(255).truncate().trim()
+        });
+
+        const {value: validatedQuery, error} = queryValidationSchema.validate(query);
+        if (error) {
+            console.log(error);
+            callback(error,null);
+            return;
+        }
+        console.log(validatedQuery);
+
+        let filter = [];
+        if (validatedQuery.name) {
+            filter.push(`name LIKE '%${validatedQuery.name}%'`);
+        }
+        if (validatedQuery.min) {
+            filter.push(`price >= ${validatedQuery.min}`);
+        }
+        if (validatedQuery.max) {
+            filter.push(`price <= ${validatedQuery.max}`)
+        }
+        if (validatedQuery.start) {
+            filter.push(`creation_date >= '${validatedQuery.start}'`);
+        }
+        if (validatedQuery.end) {
+            filter.push(`creation_date <= '${validatedQuery.end}'`);
+        }
+        if (validatedQuery.category) {
+            filter.push(`category LIKE '%${validatedQuery.category}%'`);
+        }
+        let filterMessage = filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
+        console.log(filterMessage);
+        db.query(`Select asset_id,name,price,description,category,owner_id, creation_date, is_available FROM DigitalAssets ${filterMessage}`,
             (err, res) => {
                 if (err) {
                     console.log(err);
