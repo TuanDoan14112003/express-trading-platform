@@ -22,30 +22,40 @@ const Detail = () => {
     // Extracting the product ID from the URL parameters
     const { id } = useParams();
 
-    // Mock product data for demonstration purposes
-    // const product = {
-    //     id: id,
-    //     title: "New Product",
-    //     seller: "Tuan Doan",
-    //     price: 200
-    // }
     const [product, setProduct] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    useEffect(() => {
+    useEffect(()  => {
         // The API endpoint
-        const apiUrl = `http://localhost:8000/api/assets/${id}`;
-        axios.get(apiUrl)
-            .then(response => {
-                setProduct(response.data.data.digital_asset);
+        const fetchData = async () => {
+            const apiUrl = `http://localhost:8000/api/assets/${id}`;
+            try {
+                const response = await axios.get(apiUrl);
+                var temp = response.data.data.digital_asset;
+                await fetchSeller(temp);
+                setProduct(temp); 
                 setLoading(false);
-                console.log(product.name);
-            })
-            .catch(err => {
+            } catch (err) {
                 setError(err);
                 setLoading(false);
                 console.log(err);
-            });
+            }
+        };
+        const fetchSeller = async (product) =>{
+            const url = `http://localhost:8000/api/auth/users/${product.owner_id}`;
+            try {
+                const response = await axios.get(url);
+                var name = response.data.data.user.first_name + " " + response.data.data.user.last_name
+                product["seller_name"] = name;
+            } catch (err) {
+                setError(err);
+                setLoading(false);
+                console.log(err);
+                return null;
+            };
+        }
+        fetchData();
+        console.log(product)
     }, []); // Empty dependency array means this useEffect runs once when component mounts
     if(loading)
     {
@@ -72,8 +82,9 @@ const Detail = () => {
                 className="description-tag" 
                 id={product.id} 
                 name={product.name} 
+                category={product.category}
                 price={product.price} 
-                seller={product.seller} 
+                seller={product.seller_name} 
                 description= {product.description} 
             />
         </div>

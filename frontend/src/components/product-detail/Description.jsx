@@ -12,14 +12,14 @@ import Button from "../common/Button";
 
 
 // Description component receives product details as props
-const Description = ({id, name, price, seller, description = "lorem"}) => {
+const Description = ({id, name, price, category, seller, description = "lorem"}) => {
 
     return (
         // Main container for the product description
         <div className="wrapper-description">
              {/* Container for product name and price */}
             <div className="container-brief">
-                <div className="item-name"> {name} </div>
+                <div className="item-name"> {name} ({category}) </div>
                 <div className="item-price"> {price} ETH</div>
             </div>
              {/* Product description and seller details */}
