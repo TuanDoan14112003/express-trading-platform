@@ -26,7 +26,7 @@ function Marketplace() {
             .then(response => {
                 setData(response.data.data.digital_assets);
                 setLoading(false);
-                console.log(data);
+console.log(data);
             })
             .catch(err => {
                 setError(err);

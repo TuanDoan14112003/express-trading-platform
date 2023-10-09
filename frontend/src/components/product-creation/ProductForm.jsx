@@ -12,7 +12,6 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import {useCookies} from "react-cookie";
-
 // ProductForm component definition
 function ProductForm() {
     const [errMsg, setErrMsg] = useState("");
@@ -46,8 +45,10 @@ function ProductForm() {
             "price": evt.target.price.value,
             "description": evt.target.description.value,
             "category": evt.target.category.value,
+            "age": evt.target.image.files[0]
         }, config).then(res => {
             console.log(res)
+            navigate(`/product/${res.data.data.digital_asset.id}`)
         }).catch(err => {
             console.log(err);
             // console.log(err.response.data.message);

@@ -47,7 +47,9 @@ const LoginSection = ({authStatus, setAuthStatus}) => {
     };
 
     const saveJWTinCookie = (token)=>{
-        const expiryDate = new Date('Sat Oct 07 2023 11:59:59 UTC');
+        const currentDate = new Date();
+        const expiryDate = new Date(currentDate);
+        expiryDate.setDate(currentDate.getDate() + 2);
         setCookie('jwt_token', token, {
             expires: expiryDate,
             path: '/',
