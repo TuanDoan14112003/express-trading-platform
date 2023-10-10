@@ -23,21 +23,11 @@ contract DigitalAssetMarket {
     }
 
     struct TransactionHistory {
-        uint256 asssetId;
+        uint256 assetId;
         uint256 buyerId;
         uint256 purchaseTime;
     }
 
-
-    constructor() {
-        manager = msg.sender;
-
-    }
-
-    modifier onlyManager {
-        require(msg.sender == manager);
-        _;
-    }
 
 
     mapping(uint256 => DigitalAsset) public digitalAssets;
@@ -45,7 +35,21 @@ contract DigitalAssetMarket {
     mapping(address => uint256) public userWallets;
     mapping(uint256 => TransactionHistory[]) public transactionHistory;
 
+    error Unauthorized();
+    error InsufficientFunds();
+    error NotAvailable();
 
+    modifier onlyManager {
+        if (msg.sender != manager) {
+            revert Unauthorized();
+        }
+        _;
+    }
+
+    constructor() {
+        manager = msg.sender;
+
+    }
 
     function createDigitalAsset(
         uint256 assetId,
@@ -71,9 +75,13 @@ contract DigitalAssetMarket {
     }
 
 
-    function purchaseDigitalAsset(uint256 assetId) public payable {
-        require(digitalAssets[assetId].isAvailable, "Asset is not available for sale");
-        require(msg.value >= digitalAssets[assetId].price, "Insufficient funds");
+    function purchaseDigitalAsset(uint256 assetId) public payable returns (DigitalAsset memory) {
+        if (!digitalAssets[assetId].isAvailable) {
+            revert NotAvailable();
+        }
+        if (msg.value < digitalAssets[assetId].price) {
+            revert InsufficientFunds();
+        }
 
         uint buyerId = userWallets[msg.sender];
         uint previousOwnerId = digitalAssets[assetId].ownerId;
@@ -90,6 +98,7 @@ contract DigitalAssetMarket {
         // add a new transaction to history
         transactionHistory[buyerId].push(TransactionHistory(assetId,buyerId,block.timestamp));
 
+        return digitalAssets[assetId];
     }
 
 
@@ -102,7 +111,10 @@ contract DigitalAssetMarket {
     }
 
     function changeAvailability(uint256 assetId, bool value) public {
-        require(userWallets[msg.sender] == digitalAssets[assetId].ownerId);
+        if (userWallets[msg.sender] != digitalAssets[assetId].ownerId) {
+            revert Unauthorized();
+        }
+
         digitalAssets[assetId].isAvailable = value;
     }
 
