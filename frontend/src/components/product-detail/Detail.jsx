@@ -74,7 +74,7 @@ const Detail = () => {
 
             {/* Product Image */}
             <div className="container-img">
-                <img src={ImageTest} alt="Product" />
+                <img src= {product.image_name} alt="Product" />
             </div>
             
             {/* Product Description */}
