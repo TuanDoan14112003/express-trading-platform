@@ -1,6 +1,7 @@
 const Joi = require('joi').extend(require('@joi/date'));
 const db = require("./DB");
-
+const web3 = require("./../smart-contracts/Web3Instance");
+const DigitalAssetMarketContract = require("./../smart-contracts/SmartContract");
 class DigitalAsset {
     constructor(name,description,category,price,owner_id,image_name= null) {
         this.name = name;
@@ -23,12 +24,20 @@ class DigitalAsset {
 
     static createDigitalAsset(digitalAsset, callback) {
         db.query("INSERT INTO DigitalAssets SET ?", digitalAsset,
-        (err, res) => {
+        async (err, res) => {
             if (err) {
                 console.log(err);
                 callback(err,null);
                 return;
             }
+             DigitalAssetMarketContract.methods.createDigitalAsset(res.insertId,digitalAsset.owner_id,digitalAsset.name,digitalAsset.description,digitalAsset.price,digitalAsset.category)
+                .send({
+                    from: (await web3.eth.getAccounts())[0],
+                    gas: 1000000
+                })
+            // console.log(await DigitalAssetMarketContract.methods.digitalAssets(res.insertId).call({
+            //     from: (await web3.eth.getAccounts())[0]
+            // }));
             callback(null, { id: res.insertId, ...digitalAsset });
         })
     }
@@ -101,7 +110,17 @@ class DigitalAsset {
                 callback(null, res);
             })
     }
-
+    static updateOwnership(digitalAssetId,newOwnerId,callback) {
+        db.query("UPDATE DigitalAssets SET owner_id = ? WHERE asset_id = ?", [newOwnerId,digitalAssetId],
+            (err, res) => {
+                if (err) {
+                    console.log(err);
+                    callback(err,null);
+                    return;
+                }
+                callback(null, res);
+            })
+    }
 
 }
 

@@ -1,5 +1,10 @@
 const DigitalAsset = require("./../models/DigitalAsset");
 const Joi = require('joi');
+const web3 = require("./../smart-contracts/Web3Instance");
+const DigitalAssetMarketContract = require("./../smart-contracts/SmartContract");
+const User = require("./../models/User");
+// const {Contract} = require("web3");
+const Transaction = require("./../models/Transaction");
 exports.createDigitalAsset = async (req,res) => {
     let assetData = req.body;
     assetData.owner_id = req.user.id;
@@ -93,5 +98,76 @@ exports.getOneDigitalAsset = (req,res) => {
                 digital_asset : data[0]
             }
         })
+    });
+}
+
+exports.purchaseDigitalAsset =  (req, res) => {
+    DigitalAsset.getOneDigitalAsset(req.params.id,  async (err,assetData) => {
+        if (err) {
+            return res.status(500).json({
+                status: "error",
+                message: "cannot get the digital asset"
+            })
+        }
+
+        if (assetData.length === 0) {
+            return res.status(404).json({
+                status: "fail",
+                message: "cannot find the digital asset"
+            })
+        }
+
+        User.findUserById(req.user.id, async (userError, userData) => {
+            if (userError) {
+                return res.status(500).json({
+                    status: "error",
+                    message: "cannot find the user"
+                })
+            }
+
+            if (userData.length === 0) {
+                return res.status(404).json({
+                    status: "fail",
+                    message: "cannot find the user"
+                })
+            }
+
+            let asset = assetData[0];
+            let seller_id = asset.owner_id;
+            let buyer_id = req.user.id;
+            let userWallet = userData[0].wallet_address;
+            let tx = {
+                from: userWallet,
+                to: DigitalAssetMarketContract.options.address,
+                data: await DigitalAssetMarketContract.methods.purchaseDigitalAsset(req.params.id).encodeABI(),
+                value: asset.price,
+                gasLimit: 600000,
+                gasPrice: web3.utils.toWei('3', 'gwei')
+            };
+            //TODO: Change ownership
+            let transaction_hash = null;
+            try {
+                let signedTx = await web3.eth.accounts.signTransaction(tx, userData[0].private_key);
+                transaction_hash = (await web3.eth.sendSignedTransaction(signedTx.rawTransaction)).transactionHash;
+            } catch (solidity_error) {
+                throw solidity_error;
+            }
+            DigitalAsset.updateOwnership(asset.asset_id,req.user.id, (updateOwnershipError,updateOwnershipResult) => {
+                if (err) {
+                    return res.status(500).json({
+                        status: "error",
+                        message: "cannot purchase"
+                    })
+                }
+                let transaction = new Transaction(transaction_hash,buyer_id,seller_id,asset.asset_id)
+                Transaction.createTransaction(transaction, (transactionError, transactionData) => {
+                    return res.status(200).json({
+                        status: "success"
+                    })
+                });
+
+            })
+
+        });
     });
 }
