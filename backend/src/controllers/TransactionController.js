@@ -1,7 +1,8 @@
 const Transaction = require("./../models/Transaction");
 
 exports.getAllTransactions = async (req,res) => {
-    Transaction.getAllTransactions(req.params.id, (err,data) => {
+    console.log(req.user.id);
+    Transaction.getAllTransactions(req.user.id, (err,data) => {
         if (err) {
             return res.status(500).json({
                 status: "error",
