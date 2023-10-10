@@ -7,6 +7,7 @@ last date modified: 03/09/2023
 import React from "react";
 import Description from "./Description";
 import LoadingSpinner from "../common/LoadingSpinner";
+import ProductImage from "../../assets/product-image.jpg";
 import { useState, useEffect } from "react";
 import "./Detail.css";
 import ImageTest from "../../assets/product-image.jpg";
@@ -74,7 +75,8 @@ const Detail = () => {
 
             {/* Product Image */}
             <div className="container-img">
-                <img src= {product.image_name} alt="Product" />
+                {product.image_name!==null && <img alt="product" src={product.image_name} />}
+                {product.image_name===null && <img alt="product" src={ProductImage} />}
             </div>
             
             {/* Product Description */}

@@ -11,6 +11,7 @@ import {Link} from "react-router-dom";
 
 // This component displays individual product details wrapped inside a ProductCard
 function Product({id, title, price, image}) {
+    console.log(image);
     return (
         // Using the ProductCard component as a wrapper
         <ProductCard>
@@ -18,7 +19,9 @@ function Product({id, title, price, image}) {
             <Link to={"/product/" + id}>
                 {/* Container for the product image */}
                 <div className="product-image">
-                    <img alt="product" src={image} />
+                    {image!==null && <img alt="product" src={image} />}
+                    {image===null && <img alt="product" src={ProductImage} />}
+                    
                 </div>
 
                 {/* Container for the product's information */}
