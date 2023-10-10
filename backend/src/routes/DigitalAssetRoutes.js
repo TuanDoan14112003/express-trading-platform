@@ -12,4 +12,7 @@ router.route("/")
 router.route("/:id")
     .get(digitalAssetController.getOneDigitalAsset)
 
+router.route("/:id/purchase")
+    .post(JwtMiddleware.authenticateToken,digitalAssetController.purchaseDigitalAsset)
+
 module.exports = router;
