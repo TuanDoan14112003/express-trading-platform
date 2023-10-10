@@ -89,13 +89,15 @@ exports.getOneDigitalAsset = (req,res) => {
             })
         }
 
-        if (data[0].image_name) {
-            data[0].image_name = req.protocol + '://' + req.get('host') + "/" + data[0].image_name;
+        let asset = {...data[0]};
+
+        if (asset.image_name) {
+            asset.image_name = req.protocol + '://' + req.get('host') + "/" + asset.image_name;
         }
         return res.status(200).json({
             status: "success",
             data : {
-                digital_asset : data[0]
+                digital_asset : asset
             }
         })
     });
