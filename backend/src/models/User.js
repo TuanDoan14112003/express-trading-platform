@@ -32,14 +32,18 @@ class User {
     }
 
     static async register(user,callback) {
-        const {address:wallet_address,privateKey:private_key} = web3.eth.accounts.create();
-        const newUser = {...user,wallet_address,private_key};
-        console.log(newUser);
+        const web3Account = web3.eth.accounts.create();
+
+        const {address:wallet_address,privateKey:private_key} = web3Account;
+
+        const newUser = {...user,wallet_address:web3Account.address,private_key:web3Account.privateKey};
+        console.log(web3Account);
         const accounts = await web3.eth.getAccounts();
+
         await web3.eth.sendTransaction({
             from: accounts[0],
             to: newUser.wallet_address,
-            value: 10,
+            value: 10000000000000000000,
         });
 
         const balance = await web3.eth.getBalance(newUser.wallet_address);
@@ -51,6 +55,7 @@ class User {
                     callback(err,null);
                     return;
                 }
+
                 DigitalAssetMarketContract.methods.createUser(res.insertId, newUser.last_name, newUser.email, newUser.wallet_address).send({
                     from: accounts[0],
                     gas: 1000000
@@ -76,7 +81,7 @@ class User {
     }
 
     static findUserById(id, callback) {
-        db.query(`SELECT user_id,first_name,last_name,email FROM Users WHERE user_id='${id}'`, (err,res) => {
+        db.query(`SELECT user_id,email,wallet_address,private_key FROM Users WHERE user_id='${id}'`, (err,res) => {
             if (err) {
                 console.log(err);
                 callback(err,null);
