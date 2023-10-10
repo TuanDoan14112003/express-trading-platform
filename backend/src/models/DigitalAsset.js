@@ -82,7 +82,11 @@ class DigitalAsset {
         }
         let filterMessage = filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
         console.log(filterMessage);
-        db.query(`Select asset_id,name,price,description,category,owner_id, creation_date,image_name, is_available FROM DigitalAssets ${filterMessage}`,
+        db.query(`Select asset_id,name,price,description,category,owner_id,CONCAT(first_name,' ',last_name) as owner_name, creation_date,image_name, is_available 
+                 FROM DigitalAssets ${filterMessage}
+                 INNER JOIN
+                    Users ON DigitalAssets.owner_id = Users.user_id
+                `,
             (err, res) => {
                 if (err) {
                     console.log(err);
@@ -97,7 +101,12 @@ class DigitalAsset {
     }
 
     static getOneDigitalAsset(digitalAssetId,callback) {
-        db.query(`Select asset_id,name,price,description,category,owner_id, creation_date, image_name, is_available FROM DigitalAssets WHERE asset_id='${digitalAssetId}'`,
+        db.query(`Select asset_id,name,price,description,category,owner_id,CONCAT(first_name,' ',last_name) as owner_name, creation_date, image_name, is_available 
+                FROM DigitalAssets 
+                INNER JOIN
+                    Users ON DigitalAssets.owner_id = Users.user_id
+                WHERE asset_id='${digitalAssetId}
+'`,
             (err, res) => {
                 if (err) {
                     console.log(err);
