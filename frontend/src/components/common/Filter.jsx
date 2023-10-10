@@ -117,13 +117,13 @@ function Filter({clicked,setFilter}) {
                         <div className="slider-container">
                             <label htmlFor="min-price">Min</label>
                             <input defaultValue="0"  type="range" name="min-price" id="min-price" onInput={handleMinSlider} style={{background: `linear-gradient(to right, #615DFA ${minPrice}%, white ${minPrice}%)`}}/>
-                            <p>{minPrice} ETH</p>
+                            <p>{minPrice} WEI</p>
                         </div>
 
                         <div className="slider-container">
                             <label htmlFor="max-price">Max</label>
                             <input defaultValue="100"  type="range" name="max-price" id="max-price" onInput={handleMaxSlider}  style={{background: `linear-gradient(to right, #615DFA ${maxPrice}%, white ${maxPrice}%)`}}/>
-                            <p>{maxPrice} ETH</p>
+                            <p>{maxPrice} WEI</p>
                         </div>
 
                     </div>

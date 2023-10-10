@@ -11,6 +11,7 @@ function HistoryTable() {
         {
             id: 1,
             date: "02/09/2023",
+            buyer: "OTn oz",
             title: "Product 1",
             seller: "Tuan Doan",
             price: 200,
@@ -20,6 +21,7 @@ function HistoryTable() {
             id: 2,
             date: "01/09/2023",
             title: "Product 2",
+            buyer: "OTn oz",
             seller: "Tuan Doan",
             price: 100,
             status: "pending",
@@ -29,6 +31,7 @@ function HistoryTable() {
             date: "03/09/2023",
             title: "Product 3",
             seller: "Tuan Doan",
+            buyer: "OTn oz",
             price: 150,
             status: "invalid",
         }
@@ -41,6 +44,7 @@ function HistoryTable() {
                 <thead>
                     <tr>
                         <th>Seller</th>
+                        <th>Buyer</th>
                         <th>Date</th>
                         <th>Product</th>
                         <th>Price</th>
@@ -55,9 +59,10 @@ function HistoryTable() {
                             return (
                                 <tr>
                                     <td data-label="Seller">{transaction.seller}</td>
+                                    <td data-label="Buyer">{transaction.buyer}</td>
                                     <td data-label="Date">{transaction.date}</td>
                                     <td data-label="Product">{transaction.title}</td>
-                                    <td data-label="Price">{transaction.price} ETH</td>
+                                    <td data-label="Price">{transaction.price} WEI</td>
                                     <td data-label="Status">
                                         <p className={"status status-" + transaction.status}>
                                             {transaction.status.toUpperCase()}

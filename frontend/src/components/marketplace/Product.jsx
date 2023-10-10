@@ -24,7 +24,7 @@ function Product({id, title, price, image}) {
                 {/* Container for the product's information */}
                 <div className="product-information">
                     <h2>{title}</h2>
-                    <p className="product-price">{price} ETH</p>
+                    <p className="product-price">{price} WEI</p>
                 </div>
             </Link>
         </ProductCard>
