@@ -1,6 +1,7 @@
 const Joi = require('joi').extend(require('@joi/date'));
 const db = require("./DB");
-
+const web3 = require("./../smart-contracts/Web3Instance");
+const DigitalAssetMarketContract = require("./../smart-contracts/SmartContract");
 class DigitalAsset {
     constructor(name,description,category,price,owner_id) {
         this.name = name;
@@ -22,12 +23,20 @@ class DigitalAsset {
 
     static createDigitalAsset(digitalAsset, callback) {
         db.query("INSERT INTO DigitalAssets SET ?", digitalAsset,
-        (err, res) => {
+        async (err, res) => {
             if (err) {
                 console.log(err);
                 callback(err,null);
                 return;
             }
+             DigitalAssetMarketContract.methods.createDigitalAsset(res.insertId,digitalAsset.owner_id,digitalAsset.name,digitalAsset.description,digitalAsset.price,digitalAsset.category)
+                .send({
+                    from: (await web3.eth.getAccounts())[0],
+                    gas: 1000000
+                })
+            // console.log(await DigitalAssetMarketContract.methods.digitalAssets(res.insertId).call({
+            //     from: (await web3.eth.getAccounts())[0]
+            // }));
             callback(null, { id: res.insertId, ...digitalAsset });
         })
     }
