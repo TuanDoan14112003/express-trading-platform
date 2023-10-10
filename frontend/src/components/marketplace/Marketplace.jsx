@@ -12,7 +12,7 @@ import {useState, useEffect} from "react";
 import Filter from "../common/Filter";
 import Error404 from "../../assets/error-404.png";
 import axios from 'axios';
-
+import { useLocation } from "react-router-dom";
 function Marketplace() {
     // State to manage the visibility of the filter
     const [isFilterClicked, setFilterClicked] = useState(false);
@@ -26,12 +26,11 @@ function Marketplace() {
             .then(response => {
                 setData(response.data.data.digital_assets);
                 setLoading(false);
-console.log(data);
             })
             .catch(err => {
                 setError(err);
                 setLoading(false);
-                console.log(err);
+                console.log(err.response ? true : false);
             });
     }, []); // Empty dependency array means this useEffect runs once when component mounts
 
@@ -43,10 +42,20 @@ console.log(data);
                 </div>;
     }
     if(error){
-        return <div className="center-screen">
-        <img src={Error404} alt="" />
-        <h1>{error.response.data.message}</h1>
-    </div>;
+        if(error.response ? true : false)
+        {
+            return <div className="center-screen">
+            <img src={Error404} alt="" />
+            <h1>{error.response.data.message}</h1>
+            </div>;    
+        }
+        else{
+            return <div className="center-screen">
+            <img src={Error404} alt="" />
+            <h1>{error.message}</h1>
+        </div>;
+    
+        }
     }
     return (
         // Main container for the marketplace
@@ -63,7 +72,7 @@ console.log(data);
                 {!loading && <ProductList productList={data} />}
             </div>
             {/* Filter component */}
-            <Filter clicked={isFilterClicked} setFilter={setFilterClicked} />
+            <Filter setData={setData} clicked={isFilterClicked} setFilter={setFilterClicked} />
         </div>
     );
 }

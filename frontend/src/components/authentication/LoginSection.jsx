@@ -7,7 +7,7 @@ last date modified: 03/09/2023
 // Required Libraries and Modules
 import React, { useState, useEffect } from "react";
 import "./LoginSection.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {CookiesProvide, useCookies} from "react-cookie";
 import axios from 'axios';
 /**
@@ -76,7 +76,13 @@ const LoginSection = ({authStatus, setAuthStatus}) => {
             navigate("/marketplace");
         }).catch(err => {
             // console.log(err.response.data.message);
-            setErrMsg(err.response.data.message)
+            if(err.response ? true: false)
+            {
+                setErrMsg(err.response.data.message)
+            }
+            else{
+                setErrMsg(err.message)
+            }
         });
 
     };

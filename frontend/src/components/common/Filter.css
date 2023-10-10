@@ -86,6 +86,11 @@ input[type="range"]::-webkit-slider-thumb {
     justify-content: space-between;
     margin-bottom: 10px;
 }
+.category-input{
+    border-radius: 5px;
+    min-height: 20px;
+    padding: 3px;
+}
 /* Styling for slider labels */
 .slider-container p {
     width:17%;

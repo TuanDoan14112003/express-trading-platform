@@ -21,9 +21,9 @@ Last date modified: 02/09/2023
 }
 
 .error-notice{
+    margin: 5px;
     text-align: center;
     color: #FF6969;
-    margin-bottom: 5px;
 }
 
 /* Styling for the submit button inside the product form */

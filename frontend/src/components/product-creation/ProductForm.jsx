@@ -52,7 +52,13 @@ function ProductForm() {
         }).catch(err => {
             console.log(err);
             // console.log(err.response.data.message);
-            setErrMsg(err.response.data.message)
+            if(err.response ? true: false)
+            {
+                setErrMsg(err.response.data.message)
+            }
+            else{
+                setErrMsg(err.message)
+            }
         });
     }
     return (
