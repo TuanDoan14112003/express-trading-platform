@@ -13,7 +13,7 @@ exports.createDigitalAsset = async (req,res) => {
         })
     }
 
-    const digitalAsset = new DigitalAsset(assetData.name,assetData.description,assetData.category,assetData.price,assetData.owner_id);
+    const digitalAsset = new DigitalAsset(assetData.name,assetData.description,assetData.category,assetData.price,assetData.owner_id, req.fileName);
     DigitalAsset.createDigitalAsset(digitalAsset, (err,data) => {
         if (err) {
             res.status(500).json({
@@ -52,6 +52,11 @@ exports.getAllDigitalAssets = (req,res) => {
                 message: "cannot find any digital assets"
             })
         }
+        for (let row of data) {
+            if (row.image_name) {
+                row.image_name = req.protocol + '://' + req.get('host') + "/" + row.image_name;
+            }
+        }
 
         return res.status(200).json({
             status: "success",
@@ -77,6 +82,10 @@ exports.getOneDigitalAsset = (req,res) => {
                 status: "fail",
                 message: "cannot find the digital asset"
             })
+        }
+
+        if (data[0].image_name) {
+            data[0].image_name = req.protocol + '://' + req.get('host') + "/" + data[0].image_name;
         }
         return res.status(200).json({
             status: "success",
