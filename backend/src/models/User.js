@@ -1,5 +1,7 @@
 const db = require("./DB");
 const Joi = require("joi");
+const {web3} = require("../../contracts/deploy_smart_contract");
+
 class User {
     constructor(first_name,last_name,email,password, wallet_address = "",public_key = "",private_key = "") {
         this.first_name = first_name;
@@ -30,15 +32,18 @@ class User {
     }
 
     static register(user,callback) {
-        db.query("INSERT INTO Users SET ?", user,
+        const {address:wallet_address,privateKey:private_key} = web3.eth.accounts.create();
+        const newUser = {...user,wallet_address,private_key};
+        console.log(newUser);
+        db.query("INSERT INTO Users SET ?", newUser,
             (err, res) => {
                 if (err) {
                     console.log(err);
                     callback(err,null);
                     return;
                 }
-                const newUser = {...user};
                 newUser.password = undefined; // remove password from the returned message
+                newUser.private_key = undefined; // remove private key from the returned message
                 callback(null, { user_id: res.insertId, ...newUser });
         })
     }
