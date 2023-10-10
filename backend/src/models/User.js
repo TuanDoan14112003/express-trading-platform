@@ -1,7 +1,6 @@
 const db = require("./DB");
 const Joi = require("joi");
-const {web3} = require("../../contracts/deploy_smart_contract");
-
+const web3 = require("./../smart-contracts/Web3Instance");
 class User {
     constructor(first_name,last_name,email,password, wallet_address = "",public_key = "",private_key = "") {
         this.first_name = first_name;
@@ -31,10 +30,19 @@ class User {
         });
     }
 
-    static register(user,callback) {
+    static async register(user,callback) {
         const {address:wallet_address,privateKey:private_key} = web3.eth.accounts.create();
         const newUser = {...user,wallet_address,private_key};
         console.log(newUser);
+        const accounts = await web3.eth.getAccounts();
+        await web3.eth.sendTransaction({
+            from: accounts[0],
+            to: newUser.wallet_address,
+            value: 10,
+        });
+
+        const balance = await web3.eth.getBalance(newUser.wallet_address);
+        console.log("Balance:", web3.utils.fromWei(balance, 'ether'), "ether");
         db.query("INSERT INTO Users SET ?", newUser,
             (err, res) => {
                 if (err) {
