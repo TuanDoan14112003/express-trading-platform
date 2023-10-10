@@ -83,6 +83,10 @@ exports.getOneDigitalAsset = (req,res) => {
                 message: "cannot find the digital asset"
             })
         }
+
+        if (data[0].image_name) {
+            data[0].image_name = req.protocol + '://' + req.get('host') + "/" + data[0].image_name;
+        }
         return res.status(200).json({
             status: "success",
             data : {
