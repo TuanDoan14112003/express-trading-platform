@@ -5,6 +5,7 @@ const authenticationRouter = require("./src/routes/AuthenticationRoutes");
 
 const port = 8000;
 app = express();
+app.use(express.static('upload'))
 app.use(cors());
 app.use(express.json());
 

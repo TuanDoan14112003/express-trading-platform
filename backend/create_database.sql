@@ -25,7 +25,7 @@ CREATE TABLE DigitalAssets (
     description VARCHAR(255) NOT NULL,
     price DECIMAL NOT NULL,
     category VARCHAR(255) NOT NULL,
-    image_url VARCHAR(500),
+    image_name VARCHAR(500),
     creation_date DATE NOT NULL DEFAULT (CURRENT_DATE),
     is_available BOOLEAN NOT NULL DEFAULT 1,
     FOREIGN KEY (owner_id) REFERENCES Users(user_id)
