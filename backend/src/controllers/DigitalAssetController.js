@@ -92,7 +92,7 @@ exports.getOneDigitalAsset = (req,res) => {
 }
 
 exports.purchaseDigitalAsset =  (req, res) => {
-    DigitalAsset.getOneDigitalAsset(req.params.id,  async (err,data) => {
+    DigitalAsset.getOneDigitalAsset(req.params.id,  async (err,assetData) => {
         if (err) {
             return res.status(500).json({
                 status: "error",
@@ -100,7 +100,7 @@ exports.purchaseDigitalAsset =  (req, res) => {
             })
         }
 
-        if (data.length === 0) {
+        if (assetData.length === 0) {
             return res.status(404).json({
                 status: "fail",
                 message: "cannot find the digital asset"
@@ -122,15 +122,17 @@ exports.purchaseDigitalAsset =  (req, res) => {
                 })
             }
 
+            let asset = assetData[0];
             let userWallet = userData[0].wallet_address;
             let tx = {
                 from: userWallet,
                 to: DigitalAssetMarketContract.options.address,
                 data: await DigitalAssetMarketContract.methods.purchaseDigitalAsset(req.params.id).encodeABI(),
-                value: 10000,
+                value: asset.price,
                 gasLimit: 600000,
                 gasPrice: web3.utils.toWei('3', 'gwei')
             };
+            //TODO: Change ownership
 
             try {
                 let signedTx = await web3.eth.accounts.signTransaction(tx, userData[0].private_key);
@@ -138,9 +140,16 @@ exports.purchaseDigitalAsset =  (req, res) => {
             } catch (solidity_error) {
                 throw solidity_error;
             }
-
-            return res.status(200).json({
-                status: "success"
+            DigitalAsset.updateOwnership(asset.asset_id,req.user.id, (updateOwnershipError,updateOwnershipResult) => {
+                if (err) {
+                    return res.status(500).json({
+                        status: "error",
+                        message: "cannot purchase"
+                    })
+                }
+                return res.status(200).json({
+                    status: "success"
+                })
             })
 
         });

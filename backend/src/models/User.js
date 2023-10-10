@@ -80,6 +80,7 @@ class User {
         })
     }
 
+
     static findUserById(id, callback) {
         db.query(`SELECT user_id,email,wallet_address,private_key FROM Users WHERE user_id='${id}'`, (err,res) => {
             if (err) {
@@ -90,6 +91,7 @@ class User {
             callback(null,  res);
         })
     }
+
 
 }
 

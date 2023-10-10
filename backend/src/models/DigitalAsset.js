@@ -109,7 +109,17 @@ class DigitalAsset {
                 callback(null, res);
             })
     }
-
+    static updateOwnership(digitalAssetId,newOwnerId,callback) {
+        db.query("UPDATE DigitalAssets SET owner_id = ? WHERE asset_id = ?", [newOwnerId,digitalAssetId],
+            (err, res) => {
+                if (err) {
+                    console.log(err);
+                    callback(err,null);
+                    return;
+                }
+                callback(null, res);
+            })
+    }
 
 }
 
