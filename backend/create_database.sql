@@ -32,12 +32,13 @@ CREATE TABLE DigitalAssets (
 
 );
 
-DROP TABLE IF EXISTS Transaction;
-CREATE TABLE Transaction (
-    transaction_hash VARCHAR(255) PRIMARY KEY,
-    asset_id  INT,
-    buyer_id INT,
-    seller_id INT,
+DROP TABLE IF EXISTS Transactions;
+CREATE TABLE Transactions (
+    transaction_hash VARCHAR(255) NOT NULL PRIMARY KEY,
+    asset_id  INT NOT NULL,
+    buyer_id INT NOT NULL,
+    seller_id INT NOT NULL,
+    purchase_date DATE NOT NULL DEFAULT (CURRENT_DATE),
     FOREIGN KEY (buyer_id) REFERENCES Users(user_id),
     FOREIGN KEY (seller_id) REFERENCES Users(user_id)
 );

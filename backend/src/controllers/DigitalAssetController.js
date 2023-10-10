@@ -3,7 +3,8 @@ const Joi = require('joi');
 const web3 = require("./../smart-contracts/Web3Instance");
 const DigitalAssetMarketContract = require("./../smart-contracts/SmartContract");
 const User = require("./../models/User");
-const {Contract} = require("web3");
+// const {Contract} = require("web3");
+const Transaction = require("./../models/Transaction");
 exports.createDigitalAsset = async (req,res) => {
     let assetData = req.body;
     assetData.owner_id = req.user.id;
@@ -123,6 +124,8 @@ exports.purchaseDigitalAsset =  (req, res) => {
             }
 
             let asset = assetData[0];
+            let seller_id = asset.owner_id;
+            let buyer_id = req.user.id;
             let userWallet = userData[0].wallet_address;
             let tx = {
                 from: userWallet,
@@ -133,11 +136,10 @@ exports.purchaseDigitalAsset =  (req, res) => {
                 gasPrice: web3.utils.toWei('3', 'gwei')
             };
             //TODO: Change ownership
-
+            let transaction_hash = null;
             try {
                 let signedTx = await web3.eth.accounts.signTransaction(tx, userData[0].private_key);
-                let result = await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-                console.log(result);
+                transaction_hash = (await web3.eth.sendSignedTransaction(signedTx.rawTransaction)).transactionHash;
             } catch (solidity_error) {
                 throw solidity_error;
             }
@@ -148,9 +150,13 @@ exports.purchaseDigitalAsset =  (req, res) => {
                         message: "cannot purchase"
                     })
                 }
-                return res.status(200).json({
-                    status: "success"
-                })
+                let transaction = new Transaction(transaction_hash,buyer_id,seller_id,asset.asset_id)
+                Transaction.createTransaction(transaction, (transactionError, transactionData) => {
+                    return res.status(200).json({
+                        status: "success"
+                    })
+                });
+
             })
 
         });
