@@ -11,11 +11,13 @@ import Filter from "./Filter";
 import {Link, useNavigate} from "react-router-dom";
 import {useState, useEffect} from "react";
 import { useCookies} from "react-cookie";
+import axios from "axios";
 function NavBar({authStatus, setAuthStatus}) {
     const [isFilterClicked, setFilterClicked] = useState(false); // State for handling filter click
     const [isMenuActive,setMenuActive] = useState(false); // State for handling mobile menu activation
     const [bgColor, setBgColor] = useState('transparent');  // State for handling navbar background color on scroll
     const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+    const [searchValue, setSearchValue] = useState("");
     const isAuthenticated = () => {
         return cookies.jwt_token ? true : false;
     };
@@ -49,15 +51,33 @@ function NavBar({authStatus, setAuthStatus}) {
             window.removeEventListener('scroll', handleScroll);
         };
     }, [])
+
+    const handleSearch = () => {
+        
+        // Assuming your API endpoint looks something like this
+        
+            navigate(`/marketplace?name=${searchValue}`);  // Navigate to Marketplace after setting the search value
+    };
+    const handleKeyPress = (event) => {
+        if (event.key === "Enter") {
+            handleSearch();  // Execute the search when Enter is pressed
+        }
+    };
     return (
         <>
             <header>
                  {/* Main navbar container */}
                 <div className="navbar" style={{ backgroundColor: bgColor }}>
                     <Link to="/marketplace"><img src={Logo}  alt="Website logo"/></Link> {/* Logo */}
-
-                    <input placeholder="Search digital assets" className="search-input" type="text"/> {/* Search input */}
-
+                    <input 
+                        placeholder="Search digital assets" 
+                        className="search-input" 
+                        type="text"
+                        value={searchValue}
+                        onChange={e => setSearchValue(e.target.value)}  // Update searchValue state when input changes
+                        onKeyPress={handleKeyPress}
+                    />
+                    
 
                     <img onClick={() => setFilterClicked(true)} className="filter-icon" src={FilterIcon} alt="" /> {/* Filter icon */}
 

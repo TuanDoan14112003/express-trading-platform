@@ -6,7 +6,7 @@
 * */
 
 import "./Filter.css"
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DatePicker } from "antd";
 import Select from 'react-select'
 import Button from "./Button";
@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 * This component is integrated into the Marketplace Page and Navigation Bar.
 * */
 
-function Filter({clicked,setFilter, setData}) {
+function Filter({clicked,setFilter}) {
     // State for date range picker
     const [date1, setDate1] = useState(new Date());
     const [date2, setDate2] = useState(new Date());
@@ -36,7 +36,7 @@ function Filter({clicked,setFilter, setData}) {
     }
     // State for price range slider
     const [minPrice,setMinPrice] = useState(0);
-    const [maxPrice,setMaxPrice] = useState(0);
+    const [maxPrice,setMaxPrice] = useState(100);
     // Handle slider input and price selection
     function handleSliderInput(event) {
         const val = event.target.value;
@@ -116,13 +116,13 @@ function Filter({clicked,setFilter, setData}) {
                         <h3>Price</h3>
                         <div className="slider-container">
                             <label htmlFor="min-price">Min</label>
-                            <input defaultValue="0"  type="range" name="min-price" id="min-price" onInput={handleMinSlider}/>
+                            <input defaultValue="0"  type="range" name="min-price" id="min-price" onInput={handleMinSlider} style={{background: `linear-gradient(to right, #615DFA ${minPrice}%, white ${minPrice}%)`}}/>
                             <p>{minPrice} ETH</p>
                         </div>
 
                         <div className="slider-container">
                             <label htmlFor="max-price">Max</label>
-                            <input defaultValue="0"  type="range" name="max-price" id="max-price" onInput={handleMaxSlider}/>
+                            <input defaultValue="100"  type="range" name="max-price" id="max-price" onInput={handleMaxSlider}  style={{background: `linear-gradient(to right, #615DFA ${maxPrice}%, white ${maxPrice}%)`}}/>
                             <p>{maxPrice} ETH</p>
                         </div>
 

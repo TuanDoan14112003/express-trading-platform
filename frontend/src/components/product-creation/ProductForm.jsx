@@ -35,18 +35,22 @@ function ProductForm() {
     }
     const handleSubmit = (evt) =>{
         evt.preventDefault();
-        // navigate("/marketplace");
+        const formData = new FormData();
+         // Append all other fields
+        formData.append("name", evt.target.name.value);
+        formData.append("price", evt.target.price.value);
+        formData.append("description", evt.target.description.value);
+        formData.append("category", evt.target.category.value);
+
+        // Append the image
+        formData.append("image", evt.target.image.files[0]);
         console.log(cookies.jwt_token);
         const config = {
-            headers: { Authorization: `Bearer ${cookies.jwt_token}` }
+            headers: { Authorization: `Bearer ${cookies.jwt_token}`, 
+            'Content-Type': 'multipart/form-data'
+        }
         };
-        axios.post("http://localhost:8000/api/assets/",{
-            "name": evt.target.name.value, 
-            "price": evt.target.price.value,
-            "description": evt.target.description.value,
-            "category": evt.target.category.value,
-            "age": evt.target.image.files[0]
-        }, config).then(res => {
+        axios.post("http://localhost:8000/api/assets/",formData, config).then(res => {
             console.log(res)
             navigate(`/product/${res.data.data.digital_asset.id}`)
         }).catch(err => {

@@ -19,10 +19,14 @@ function Marketplace() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const location = useLocation();
     useEffect(() => {
         // The API endpoint
+        setLoading(true);
+        setError(null);
         const apiUrl = 'http://localhost:8000/api/assets/';
-        axios.get(apiUrl)
+        const fullURL = `${apiUrl}${location.search}`;
+        axios.get(fullURL)
             .then(response => {
                 setData(response.data.data.digital_assets);
                 setLoading(false);
@@ -32,7 +36,7 @@ function Marketplace() {
                 setLoading(false);
                 console.log(err.response ? true : false);
             });
-    }, []); // Empty dependency array means this useEffect runs once when component mounts
+    }, [location.search]);
 
     if(loading)
     {
@@ -72,7 +76,7 @@ function Marketplace() {
                 {!loading && <ProductList productList={data} />}
             </div>
             {/* Filter component */}
-            <Filter setData={setData} clicked={isFilterClicked} setFilter={setFilterClicked} />
+            <Filter clicked={isFilterClicked} setFilter={setFilterClicked} />
         </div>
     );
 }
