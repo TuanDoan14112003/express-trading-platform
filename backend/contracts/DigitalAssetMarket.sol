@@ -76,7 +76,7 @@ contract DigitalAssetMarket {
     }
 
 
-    function purchaseDigitalAsset(uint256 assetId) public payable returns (Transaction memory) {
+    function purchaseDigitalAsset(uint256 assetId) public payable {
         if (!digitalAssets[assetId].isAvailable) {
             revert NotAvailable();
         }
@@ -101,7 +101,6 @@ contract DigitalAssetMarket {
         Transaction memory transaction = Transaction(assetId,buyerId,previousOwnerId,block.timestamp);
         transactionHistory[buyerId].push(transaction);
         transactionHistory[previousOwnerId].push(transaction);
-        return transaction;
     }
 
 
