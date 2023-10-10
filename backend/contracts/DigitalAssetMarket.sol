@@ -22,9 +22,10 @@ contract DigitalAssetMarket {
 
     }
 
-    struct TransactionHistory {
+    struct Transaction {
         uint256 assetId;
         uint256 buyerId;
+        uint256 sellerId;
         uint256 purchaseTime;
     }
 
@@ -33,7 +34,7 @@ contract DigitalAssetMarket {
     mapping(uint256 => DigitalAsset) public digitalAssets;
     mapping(uint256 => UserInfo) public users;
     mapping(address => uint256) public userWallets;
-    mapping(uint256 => TransactionHistory[]) public transactionHistory;
+    mapping(uint256 => Transaction[]) public transactionHistory;
 
     error Unauthorized();
     error InsufficientFunds();
@@ -75,7 +76,7 @@ contract DigitalAssetMarket {
     }
 
 
-    function purchaseDigitalAsset(uint256 assetId) public payable returns (DigitalAsset memory) {
+    function purchaseDigitalAsset(uint256 assetId) public payable returns (Transaction memory) {
         if (!digitalAssets[assetId].isAvailable) {
             revert NotAvailable();
         }
@@ -96,9 +97,11 @@ contract DigitalAssetMarket {
 
         digitalAssets[assetId].isAvailable = false;
         // add a new transaction to history
-        transactionHistory[buyerId].push(TransactionHistory(assetId,buyerId,block.timestamp));
 
-        return digitalAssets[assetId];
+        Transaction memory transaction = Transaction(assetId,buyerId,previousOwnerId,block.timestamp);
+        transactionHistory[buyerId].push(transaction);
+        transactionHistory[previousOwnerId].push(transaction);
+        return transaction;
     }
 
 
@@ -106,7 +109,7 @@ contract DigitalAssetMarket {
         return users[userId].ownedAssetIds;
     }
 
-    function getUserTransactionHistory(uint256 userId) public view returns (TransactionHistory[] memory)  {
+    function getUserTransactionHistory(uint256 userId) public view returns (Transaction[] memory)  {
         return transactionHistory[userId];
     }
 

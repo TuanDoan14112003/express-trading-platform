@@ -136,7 +136,8 @@ exports.purchaseDigitalAsset =  (req, res) => {
 
             try {
                 let signedTx = await web3.eth.accounts.signTransaction(tx, userData[0].private_key);
-                await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+                let result = await web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+                console.log(result);
             } catch (solidity_error) {
                 throw solidity_error;
             }

@@ -32,6 +32,16 @@ CREATE TABLE DigitalAssets (
 
 );
 
+DROP TABLE IF EXISTS Transaction;
+CREATE TABLE Transaction (
+    transaction_hash VARCHAR(255) PRIMARY KEY,
+    asset_id  INT,
+    buyer_id INT,
+    seller_id INT,
+    FOREIGN KEY (buyer_id) REFERENCES Users(user_id),
+    FOREIGN KEY (seller_id) REFERENCES Users(user_id)
+);
+
 
 DROP USER IF EXISTS 'trading-platform-admin'@'localhost';
 CREATE USER 'trading-platform-admin'@'localhost' IDENTIFIED WITH mysql_native_password BY'12345678';
