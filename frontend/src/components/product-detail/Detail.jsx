@@ -86,6 +86,7 @@ const Detail = () => {
                 price={product.price} 
                 seller={product.seller_name} 
                 description= {product.description} 
+                date = {product.creation_date}
             />
         </div>
     );
