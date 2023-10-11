@@ -7,7 +7,19 @@
 import Input from "../common/Input";
 import "./CheckoutForm.css";
 import Button from "../common/Button";
+import axios from "axios";
+import { useCookies } from "react-cookie";
 function CheckoutForm({opened, setCheckoutForm}) {
+    const [cookies, setCookie] = useCookies(["user"]);
+    const config = {
+        headers: { Authorization: `Bearer ${cookies.jwt_token}`, 
+        'Content-Type': 'multipart/form-data'
+    }
+    };
+    const handlePurchase = (evt)=>{
+        evt.preventDefault();
+        
+    }
     return opened ? (
         <div className="checkout-form">
             <form>
@@ -16,7 +28,7 @@ function CheckoutForm({opened, setCheckoutForm}) {
                 <Input type="text" name="address" label="Address"/>
                 <div>
                     <Button onClick={() => setCheckoutForm(false)} className="cancel-button">Cancel</Button>
-                    <Button className="purchase-button" >Purchase</Button>
+                    <Button onClick={handlePurchase} className="purchase-button" >Purchase</Button>
                 </div>
 
 

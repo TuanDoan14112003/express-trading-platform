@@ -22,22 +22,29 @@ function History() {
     };
     const [authStatus, setAuthStatus] = useState(isAuthenticated());
     useEffect(()=>{
-        axios.get("http://localhost:8000/api/auth/users/1/transactions")
-            .then(response => {
-                setTransaction(response.data.data.transactions);
-                console.log(response.data.data.transactions)
-            })
-            .catch(err => {
-                console.log(err);
-                if(err.response ? true: false)
-                {
-                    setErrMsg(err.response.data.message)
-                }
-                else{
-                   
-                    setErrMsg(err.message)
-                }
-            });
+        if(isAuthenticated())
+        {
+            const config = {
+                headers: { Authorization: `Bearer ${cookies.jwt_token}`
+            }
+            };
+            axios.get("http://localhost:8000/api/users/profile/transactions", config)
+                .then(response => {
+                    setTransaction(response.data.data.transactions);
+                    console.log(response.data.data.transactions)
+                })
+                .catch(err => {
+                    console.log(err);
+                    if(err.response ? true: false)
+                    {
+                        setErrMsg(err.response.data.message)
+                    }
+                    else{
+                       
+                        setErrMsg(err.message)
+                    }
+                });    
+        }
     },[])
     if(!authStatus){
         return (

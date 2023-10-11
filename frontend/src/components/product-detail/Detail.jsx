@@ -33,7 +33,7 @@ const Detail = () => {
             try {
                 const response = await axios.get(apiUrl);
                 var temp = response.data.data.digital_asset;
-                await fetchSeller(temp);
+                // await fetchSeller(temp);
                 setProduct(temp); 
                 setLoading(false);
             } catch (err) {
@@ -42,19 +42,6 @@ const Detail = () => {
                 console.log(err);
             }
         };
-        const fetchSeller = async (product) =>{
-            const url = `http://localhost:8000/api/auth/users/${product.owner_id}`;
-            try {
-                const response = await axios.get(url);
-                var name = response.data.data.user.first_name + " " + response.data.data.user.last_name
-                product["seller_name"] = name;
-            } catch (err) {
-                setError(err);
-                setLoading(false);
-                console.log(err);
-                return null;
-            };
-        }
         fetchData();
         console.log(product)
     }, []); // Empty dependency array means this useEffect runs once when component mounts
@@ -86,7 +73,7 @@ const Detail = () => {
                 name={product.name} 
                 category={product.category}
                 price={product.price} 
-                seller={product.seller_name} 
+                seller={product.owner_name} 
                 description= {product.description} 
                 date = {product.creation_date}
             />
