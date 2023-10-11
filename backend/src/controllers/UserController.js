@@ -1,6 +1,6 @@
 const User = require("./../models/User");
 const web3 = require("./../smart-contracts/Web3Instance");
-const DigitalAssetMarketContract = require("./../smart-contracts/SmartContract");
+const DigitalAsset = require("./../models/DigitalAsset");
 exports.getOneUser =  (req,res) => {
     User.findUserById(req.params.id, (err,data) => {
         if (err) {
@@ -41,14 +41,24 @@ exports.getCurrentUser =  (req,res) => {
                 message: "cannot find the user"
             })
         }
-        data[0].private_key = undefined;
-        data[0].balance = (await web3.eth.getBalance(data[0].wallet_address)).toString();
-        console.log(data[0].balance)
-        return res.status(200).json({
-            status: "success",
-            data : {
-                user : data[0]
+        let user = {...data[0]};
+        user.private_key = undefined;
+        user.balance = (await web3.eth.getBalance(data[0].wallet_address)).toString();
+        DigitalAsset.getAllDigitalAssets({"owner_id": data[0].user_id},(err,assetData) => {
+            if (err) {
+                return res.status(500).json({
+                    status: "err",
+                    message: "cannot get user's digital assets"
+                })
             }
-        })
+            user.digital_assets = assetData
+            return res.status(200).json({
+                status: "success",
+                data : {
+                    user
+                }
+            })
+        });
+
     })
 }

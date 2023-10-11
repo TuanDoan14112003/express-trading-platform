@@ -11,7 +11,6 @@ CREATE TABLE Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     password VARCHAR(255) NOT NULL,
     wallet_address VARCHAR(255) NOT NULL,
-    public_key VARCHAR(255) NOT NULL,
     private_key VARCHAR(255) NOT NULL,
     UNIQUE (email)
 );

@@ -50,7 +50,8 @@ class DigitalAsset {
             start: Joi.date().format('YYYY-MM-DD').raw(),
             end: Joi.date().format('YYYY-MM-DD').raw(),
             category: Joi.string().max(255).truncate().trim(),
-            name: Joi.string().max(255).truncate().trim()
+            name: Joi.string().max(255).truncate().trim(),
+            owner_id: Joi.number()
         });
 
         const {value: validatedQuery, error} = queryValidationSchema.validate(query);
@@ -79,6 +80,9 @@ class DigitalAsset {
         }
         if (validatedQuery.category) {
             filter.push(`category LIKE '%${validatedQuery.category}%'`);
+        }
+        if (validatedQuery.owner_id) {
+            filter.push(`owner_id = ${validatedQuery.owner_id}`);
         }
         let filterMessage = filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
         console.log(filterMessage);
