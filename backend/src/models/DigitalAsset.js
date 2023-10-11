@@ -83,9 +83,10 @@ class DigitalAsset {
         let filterMessage = filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
         console.log(filterMessage);
         db.query(`Select asset_id,name,price,description,category,owner_id,CONCAT(first_name,' ',last_name) as owner_name, creation_date,image_name, is_available 
-                 FROM DigitalAssets ${filterMessage}
+                 FROM DigitalAssets 
                  INNER JOIN
                     Users ON DigitalAssets.owner_id = Users.user_id
+                ${filterMessage}
                 `,
             (err, res) => {
                 if (err) {
