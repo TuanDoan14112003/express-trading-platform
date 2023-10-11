@@ -125,7 +125,7 @@ class DigitalAsset {
             })
     }
     static updateOwnership(digitalAssetId,newOwnerId,callback) {
-        db.query("UPDATE DigitalAssets SET owner_id = ? WHERE asset_id = ?", [newOwnerId,digitalAssetId],
+        db.query("UPDATE DigitalAssets SET is_available = 0, owner_id = ? WHERE asset_id = ?", [newOwnerId,digitalAssetId],
             (err, res) => {
                 if (err) {
                     console.log(err);
