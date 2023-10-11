@@ -88,6 +88,7 @@ function NavBar({authStatus, setAuthStatus}) {
                         <Link to="/history">History</Link>
                         <Link to="/create-product">Sell a product</Link>
                         <Link to="/cart">Cart</Link>
+                        <Link to="/profile">Profile</Link>
                     </nav>
                      {/* Hamburger menu button for mobile */}
                     <button onClick={(event) => setMenuActive(!isMenuActive)} className={"hamburger" + (isMenuActive ? " is-active": "")}>

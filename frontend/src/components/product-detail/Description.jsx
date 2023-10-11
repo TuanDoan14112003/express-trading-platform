@@ -10,10 +10,31 @@ import "./Description.css";
 import {Link} from "react-router-dom";
 import Button from "../common/Button";
 import CheckoutForm from "./CheckoutForm";
-
+import { useCookies } from "react-cookie";
+import axios from "axios";
 // Description component receives product details as props
-const Description = ({id,date, name, price, category, seller, description = "lorem"}) => {
+const Description = ({id,owner_id,date, name, price, category, seller, description = "lorem"}) => {
     const [checkoutForm, setCheckoutForm] = useState(false);
+    const [checkUser,setCheckUser] = useState(false);
+    const [cookies, setCookie] = useCookies(["user"]);
+    const isAuthenticated = () => {
+        return cookies.jwt_token ? true : false;
+    };
+    const [authStatus, setAuthStatus] = useState(isAuthenticated());
+    if(isAuthenticated())
+    {
+        const config = {
+            headers: { Authorization: `Bearer ${cookies.jwt_token}`
+        }
+        };
+        axios.get("http://localhost:8000/api/users/profile", config)
+        .then(res=>{
+            let current_id = res.data.data.user.user_id;
+            if(current_id != owner_id){
+                setCheckUser(true);
+            }
+        })
+    }
     return (
         // Main container for the product description
         <div className="wrapper-description">
@@ -29,9 +50,10 @@ const Description = ({id,date, name, price, category, seller, description = "lor
                 {description} 
             </div>
              {/* Buy button container */}
-            <div className="container-button">
+             {authStatus && checkUser &&  <div className="container-button">
                 <Button onClick={() => setCheckoutForm(true)}>Buy</Button>
-            </div>
+            </div>}
+           
             <CheckoutForm setCheckoutForm={setCheckoutForm} opened={checkoutForm}/>
         </div>
     );

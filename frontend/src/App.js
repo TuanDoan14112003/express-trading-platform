@@ -13,6 +13,7 @@ import Marketplace from "./components/marketplace/Marketplace";
 import History from "./components/history/History";
 import Cart from "./components/cart/Cart";
 import ProductCreation from "./components/product-creation/ProductCreation";
+import Profile from "./components/profile/Profile";
 import Layout from "./components/common/Layout";
 import { useState } from "react";
 import { useCookies} from "react-cookie";
@@ -34,6 +35,7 @@ function App() {
             <Route path="/create-product" element={<ProductCreation/>} />
             <Route path="/product/:id" element={<Detail/>} />
             <Route path="/login" element={<LoginPage authStatus={authStatus} setAuthStatus={setAuthStatus}/>} />
+            <Route path="/profile" element={<Profile/>} />
         </Route>
     </Routes>
   );

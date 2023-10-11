@@ -71,6 +71,7 @@ const Detail = () => {
                 className="description-tag" 
                 id={product.id} 
                 name={product.name} 
+                owner_id = {product.owner_id}
                 category={product.category}
                 price={product.price} 
                 seller={product.owner_name} 

@@ -12,8 +12,7 @@ import { useCookies } from "react-cookie";
 function CheckoutForm({opened, setCheckoutForm}) {
     const [cookies, setCookie] = useCookies(["user"]);
     const config = {
-        headers: { Authorization: `Bearer ${cookies.jwt_token}`, 
-        'Content-Type': 'multipart/form-data'
+        headers: { Authorization: `Bearer ${cookies.jwt_token}`
     }
     };
     const handlePurchase = (evt)=>{

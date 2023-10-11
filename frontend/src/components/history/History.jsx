@@ -60,8 +60,6 @@ function History() {
         <img src={Error404} alt="" />
         <h1>{errMsg}</h1>
         </div>;    
-       
-    
         }
     return (
         // Main container for the transaction history section
