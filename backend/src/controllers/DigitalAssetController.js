@@ -142,23 +142,30 @@ exports.purchaseDigitalAsset =  (req, res) => {
                 from: userWallet,
                 to: DigitalAssetMarketContract.options.address,
                 data: await DigitalAssetMarketContract.methods.purchaseDigitalAsset(req.params.id).encodeABI(),
-                value: asset.price,
+                value: web3.utils.toWei(asset.price,"ether"),
                 gasLimit: 600000,
-                gasPrice: web3.utils.toWei('3', 'gwei')
+                gasPrice: await web3.eth.getGasPrice()
             };
+
             //TODO: Change ownership
             let transaction_hash = null;
+
             try {
                 let signedTx = await web3.eth.accounts.signTransaction(tx, userData[0].private_key);
                 transaction_hash = (await web3.eth.sendSignedTransaction(signedTx.rawTransaction)).transactionHash;
-            } catch (solidity_error) {
-                throw solidity_error;
+            } catch (eth_error) {
+                return res.status(500).json({
+
+                    status: "error",
+                    message: eth_error
+                })
             }
+
             DigitalAsset.updateOwnership(asset.asset_id,req.user.id, (updateOwnershipError,updateOwnershipResult) => {
                 if (err) {
                     return res.status(500).json({
                         status: "error",
-                        message: "cannot purchase"
+                        message: "cannot update ownership"
                     })
                 }
                 let transaction = new Transaction(transaction_hash,buyer_id,seller_id,asset.asset_id)

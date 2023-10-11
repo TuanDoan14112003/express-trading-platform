@@ -49,11 +49,16 @@ class User {
                     callback(err,null);
                     return;
                 }
-
-                DigitalAssetMarketContract.methods.createUser(res.insertId, newUser.last_name, newUser.email, newUser.wallet_address).send({
-                    from: accounts[0],
-                    gas: 1000000
-                });
+                try {
+                    DigitalAssetMarketContract.methods.createUser(res.insertId, newUser.last_name, newUser.email, newUser.wallet_address).send({
+                        from: accounts[0],
+                        gas: 1000000
+                    });
+                } catch (eth_error) {
+                    console.log(eth_error);
+                    callback(eth_error,null);
+                    return;
+                }
 
                 newUser.password = undefined; // remove password from the returned message
                 newUser.private_key = undefined; // remove private key from the returned message

@@ -22,7 +22,7 @@ CREATE TABLE DigitalAssets (
     owner_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
-    price DECIMAL NOT NULL,
+    price DECIMAL(8,2) NOT NULL,
     category VARCHAR(255) NOT NULL,
     image_name VARCHAR(500),
     creation_date DATE NOT NULL DEFAULT (CURRENT_DATE),

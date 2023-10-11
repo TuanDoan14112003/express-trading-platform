@@ -79,7 +79,8 @@ exports.getBalance =  (req, res) => {
                 message: "cannot find the user"
             })
         }
-        let balance = (await web3.eth.getBalance(data[0].wallet_address)).toString();
+
+        let balance = web3.utils.fromWei(await web3.eth.getBalance(data[0].wallet_address),"ether");
         return res.status(200).json({
             status: "success",
             data : {
@@ -92,7 +93,7 @@ exports.getBalance =  (req, res) => {
 exports.depositCoins =  async (req, res) => {
 
     const bodySchema = Joi.object().keys({
-        amount: Joi.number().max(1000000).required()
+        amount: Joi.number().precision(2).sign('positive').max(10).required()
     });
 
     let bodyData = {...req.body};
@@ -129,7 +130,7 @@ exports.depositCoins =  async (req, res) => {
             await web3.eth.sendTransaction({
                 from: accounts[0],
                 to: user.wallet_address,
-                value: bodyData.amount,
+                value: web3.utils.toWei(bodyData.amount,"ether"),
             });
         } catch (err) {
             return res.status(500).json({

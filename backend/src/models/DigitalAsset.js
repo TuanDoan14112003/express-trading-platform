@@ -17,8 +17,8 @@ class DigitalAsset {
                 name: Joi.string().min(1).max(255).truncate().trim().required(),
                 description: Joi.string().min(1).max(255).truncate().trim().required(),
                 category: Joi.string().min(1).max(50).truncate().trim().required(),
-                price: Joi.number().required(),
-                owner_id: Joi.number().required()
+                price: Joi.number().precision(2).sign('positive').less(1000000).required(),
+                owner_id: Joi.number().sign('positive').required()
         });
     }
 
@@ -30,11 +30,19 @@ class DigitalAsset {
                 callback(err,null);
                 return;
             }
-             DigitalAssetMarketContract.methods.createDigitalAsset(res.insertId,digitalAsset.owner_id,digitalAsset.name,digitalAsset.description,digitalAsset.price,digitalAsset.category)
-                .send({
-                    from: (await web3.eth.getAccounts())[0],
-                    gas: 1000000
+            try {
+                DigitalAssetMarketContract.methods.createDigitalAsset(res.insertId,digitalAsset.owner_id,digitalAsset.name,digitalAsset.description,web3.utils.toWei(digitalAsset.price,"ether"),digitalAsset.category)
+                    .send({
+                        from: (await web3.eth.getAccounts())[0],
+                        gas: 1000000
                 })
+            } catch (eth_error) {
+                console.log(eth_error);
+                callback(eth_error,null);
+                return;
+            }
+
+
             // console.log(await DigitalAssetMarketContract.methods.digitalAssets(res.insertId).call({
             //     from: (await web3.eth.getAccounts())[0]
             // }));
