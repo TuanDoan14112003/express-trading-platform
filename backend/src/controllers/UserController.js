@@ -1,6 +1,7 @@
 const User = require("./../models/User");
 const web3 = require("./../smart-contracts/Web3Instance");
 const DigitalAsset = require("./../models/DigitalAsset");
+const Joi = require("Joi");
 exports.getOneUser =  (req,res) => {
     User.findUserById(req.params.id, (err,data) => {
         if (err) {
@@ -26,7 +27,7 @@ exports.getOneUser =  (req,res) => {
 
 }
 
-exports.getCurrentUser =  (req,res) => {
+exports.getProfile =  (req, res) => {
     User.findUserById(req.user.id, async (err,data) => {
         if (err) {
             return res.status(500).json({
@@ -43,7 +44,7 @@ exports.getCurrentUser =  (req,res) => {
         }
         let user = {...data[0]};
         user.private_key = undefined;
-        user.balance = (await web3.eth.getBalance(data[0].wallet_address)).toString();
+
         DigitalAsset.getAllDigitalAssets({"owner_id": data[0].user_id},(err,assetData) => {
             if (err) {
                 return res.status(500).json({
@@ -60,5 +61,86 @@ exports.getCurrentUser =  (req,res) => {
             })
         });
 
+    })
+}
+
+exports.getBalance =  (req, res) => {
+    User.findUserById(req.user.id, async (err,data) => {
+        if (err) {
+            return res.status(500).json({
+                status: "error",
+                message: "cannot get profile"
+            })
+        }
+
+        if (data.length === 0) {
+            return res.status(404).json({
+                status: "fail",
+                message: "cannot find the user"
+            })
+        }
+        let balance = (await web3.eth.getBalance(data[0].wallet_address)).toString();
+        return res.status(200).json({
+            status: "success",
+            data : {
+                balance
+            }
+        })
+    })
+}
+
+exports.depositCoins =  async (req, res) => {
+
+    const bodySchema = Joi.object().keys({
+        amount: Joi.number().max(1000000).required()
+    });
+
+    let bodyData = {...req.body};
+
+    try {
+        await bodySchema.validateAsync(bodyData);
+    } catch (error) {
+        let errorMessage = error.details.map(err => err.message.replace(/"/g,'')).join(", ");
+        return res.status(400).json({
+            status: "fail",
+            message: errorMessage
+        })
+    }
+
+
+    User.findUserById(req.user.id, async (err,data) => {
+        if (err) {
+            return res.status(500).json({
+                status: "error",
+                message: "cannot get profile"
+            })
+        }
+
+        if (data.length === 0) {
+            return res.status(404).json({
+                status: "fail",
+                message: "cannot find the user"
+            })
+        }
+        let user = {...data[0]};
+
+        const accounts = await web3.eth.getAccounts();
+        try {
+            await web3.eth.sendTransaction({
+                from: accounts[0],
+                to: user.wallet_address,
+                value: bodyData.amount,
+            });
+        } catch (err) {
+            return res.status(500).json({
+                status: "error",
+                message: "cannot deposit coins to account"
+            })
+        }
+
+
+        return res.status(200).json({
+            status: "success"
+        })
     })
 }
