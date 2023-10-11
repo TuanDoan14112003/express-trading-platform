@@ -39,6 +39,7 @@ exports.getCurrentUser = (req,res) => {
                 message: "cannot find the user"
             })
         }
+        data[0].private_key = undefined;
         return res.status(200).json({
             status: "success",
             data : {
