@@ -34,3 +34,7 @@ npm-debug.log
 .env
 
 upload/
+
+backend/build/
+
+backend/src/smart-contracts/ContractDetails.json
