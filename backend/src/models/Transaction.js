@@ -1,4 +1,5 @@
 const db = require("./DB");
+const Joi = require("joi");
 class Transaction {
     constructor(transaction_hash,buyer_id,seller_id,asset_id) {
         this.transaction_hash = transaction_hash;
@@ -7,20 +8,37 @@ class Transaction {
         this.asset_id = asset_id;
     }
 
+    static getValidationSchema = () => Joi.object({
+        transaction_hash: Joi.string().required(),
+        buyer_id: Joi.number().sign("positive").required(),
+        seller_id: Joi.number().sign("positive").required(),
+        asset_id: Joi.number().sign("positive").required(),
+    })
+
     static createTransaction(transaction, callback) {
-        db.query("INSERT INTO Transactions SET ?", transaction,
-            async (err, res) => {
-                if (err) {
-                    console.log(err);
-                    callback(err,null);
-                    return;
-                }
-                callback(null, { id: res.insertId, ...transaction });
+        return new Promise(async (resolve,reject) => {
+            let newTransaction = {...transaction};
+            try {
+                await Transaction.getValidationSchema().validateAsync(newTransaction);
+            } catch (error) {
+                return reject(error);
+            }
+
+            db.query("INSERT INTO Transactions SET ?", newTransaction,
+                async (err, res) => {
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    }
+                    return resolve({ id: res.insertId, ...newTransaction });
             })
+        })
+
     }
 
     static getAllTransactions(user_id,callback) {
-        db.query(`SELECT
+        return new Promise((resolve,reject) => {
+            db.query(`SELECT
                     t.transaction_hash,
                     CONCAT(b.first_name,' ',b.last_name) AS buyer_name,
                     CONCAT(s.first_name,' ',s.last_name) AS seller_name,
@@ -39,14 +57,14 @@ class Transaction {
                     b.user_id = ${user_id}
                 OR 
                     s.user_id = ${user_id}`,
-            (err, res) => {
-                if (err) {
-                    console.log(err);
-                    callback(err,null);
-                    return;
-                }
-                callback(null, res);
-            })
+                (err, res) => {
+                    if (err) {
+                        console.log(err);
+                        return reject(null);
+                    }
+                    return resolve(res);
+                })
+        })
     }
 
 
