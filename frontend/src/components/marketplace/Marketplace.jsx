@@ -25,7 +25,13 @@ function Marketplace() {
         setLoading(true);
         setError(null);
         const apiUrl = 'http://localhost:8000/api/assets/';
-        const fullURL = `${apiUrl}${location.search}`;
+        let fullURL =""
+        if(location.search==""){
+            fullURL = `${apiUrl}?availability=true`;
+        }
+        else{
+            fullURL = `${apiUrl}${location.search}`;
+        }
         axios.get(fullURL)
             .then(response => {
                 setData(response.data.data.digital_assets);

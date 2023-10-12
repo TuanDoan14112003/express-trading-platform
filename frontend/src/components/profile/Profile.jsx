@@ -64,10 +64,10 @@ function Profile() {
     return (
         <div className="cart">
             <div className="cart-body">
-                <h1>Your Profile</h1>
+                <h1> {`${userData.user_name}'s Profile`}</h1>
                 
                 <div className="btn-container">
-                    <h2>Balance: {balance} ETH</h2>
+                    <h2 >Balance: {balance} ETH</h2>
                     <Button onClick={() => setDepositForm(true)}  className="btn-deposit">Deposit</Button>
                 </div>  
                 {userData && userData.digital_assets.length !== 0 && <ProductList productList={userData.digital_assets} />}
