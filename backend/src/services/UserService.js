@@ -1,8 +1,21 @@
 const web3 = require("../smart-contracts/Web3Instance");
 const User = require("../models/User");
-const Joi = require("joi");
+const Joi = require("joi").extend(require('@joi/date'));
 const DigitalAssetMarketContract = require("../smart-contracts/SmartContract");
 const jwtUtils = require("../utils/JwtUtils");
+const DigitalAssetService = require("../services/DigitalAssetService");
+const creditCardValidation = Joi.object().keys({
+    amount: Joi.number().precision(2).sign('positive').max(10).required(),
+    card_number: Joi.string().creditCard().required().messages({
+        'string.creditCard': 'Invalid credit card number',
+    }),
+    card_holder: Joi.string().min(3).required(),
+    expiry_date: Joi.date().format('MM-YYYY').raw().required(),
+    cvv: Joi.string().length(3).pattern(/^[0-9]+$/).required().messages({
+        'string.length': 'CVV must be 3 digits long',
+        'string.pattern.base': 'CVV must contain only numbers',
+    })
+});
 
 class InvalidCredentialsError extends Error {
     constructor() {
@@ -11,6 +24,12 @@ class InvalidCredentialsError extends Error {
     }
 }
 
+class UserNotFound extends Error {
+    constructor() {
+        super("User Not Found");
+        this.name = "UserNotFound";
+    }
+}
 
 
 exports.createUser = async (first_name,last_name,email,password) => {
@@ -49,5 +68,51 @@ exports.login = async (email,password) => {
 
 }
 
+exports.findUserById = async (id) => {
+
+    let users = await User.findUserById(id);
+
+    if (users.length === 0) {
+        throw new UserNotFound();
+    }
+
+    return users[0];
+}
+
+exports.findProfileById = async (id) => {
+    let user = await exports.findUserById(id);
+    user.private_key = undefined;
+    try {
+        user.digital_assets = await DigitalAssetService.findDigitalAssets({"owner_id": id})
+    } catch (error) {
+        if (error instanceof DigitalAssetService.DigitalAssetsNotFoundError) {
+            user.digital_assets = []
+        } else {
+            throw error;
+        }
+    }
+
+    return user;
+}
+
+exports.getBalanceByUserId = async (id) => {
+    const user = await exports.findUserById(id);
+    return Number(web3.utils.fromWei(await web3.eth.getBalance(user.wallet_address),"ether"));
+}
+
+exports.depositCoinsToUserBalance = async (user_id,creditCardData) => {
+    await creditCardValidation.validateAsync(creditCardData);
+    const user = await exports.findUserById(user_id);
+    const accounts = await web3.eth.getAccounts();
+
+    await web3.eth.sendTransaction({
+        from: accounts[0],
+        to: user.wallet_address,
+        value: web3.utils.toWei(creditCardData.amount,"ether"),
+    });
+
+}
+
 exports.InvalidCredentialsError = InvalidCredentialsError;
+exports.UserNotFound = UserNotFound;
 

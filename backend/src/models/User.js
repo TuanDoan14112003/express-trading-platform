@@ -65,7 +65,7 @@ class User {
 
     static findUserById(id) {
         return new Promise((resolve,reject) => {
-            db.query(`SELECT user_id,email,wallet_address,private_key FROM Users WHERE user_id='${id}'`, (err,res) => {
+            db.query(`SELECT CONCAT(first_name,' ',last_name) as user_name,user_id,email,wallet_address,private_key FROM Users WHERE user_id='${id}'`, (err,res) => {
                 if (err) {
                     console.log(err);
                     return reject(err);
