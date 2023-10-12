@@ -8,17 +8,6 @@ const Transaction = require("./../models/Transaction");
 exports.createDigitalAsset = async (req, res) => {
     let assetData = req.body;
     assetData.owner_id = req.user.id;
-    try {
-        await DigitalAsset.getValidationSchema().validateAsync(assetData);
-    } catch (error) {
-        let errorMessage = error.details
-            .map((err) => err.message.replace(/"/g, ""))
-            .join(", ");
-        return res.status(400).json({
-            status: "fail",
-            message: errorMessage,
-        });
-    }
 
     const digitalAsset = new DigitalAsset(
         assetData.name,
@@ -28,13 +17,23 @@ exports.createDigitalAsset = async (req, res) => {
         assetData.owner_id,
         req.fileName,
     );
+
     let newAsset;
     try {
         newAsset = await DigitalAsset.createDigitalAsset(digitalAsset);
     } catch (error) {
+        if (error instanceof Joi.ValidationError) {
+            let errorMessage = error.details
+                .map((err) => err.message.replace(/"/g, ""))
+                .join(", ");
+            return res.status(400).json({
+                status: "fail",
+                message: errorMessage,
+            });
+        }
         return res.status(500).json({
             status: "error",
-            message: error
+            message: error,
         });
     }
 
@@ -99,15 +98,14 @@ exports.getAllDigitalAssets = async (req, res) => {
             let errorMessage = error.details
                 .map((err) => err.message.replace(/"/g, ""))
                 .join(", ");
-
-            return res.status(404).json({
+            return res.status(400).json({
                 status: "fail",
                 message: errorMessage,
             });
         }
         return res.status(500).json({
             status: "error",
-            message: error
+            message: error,
         });
     }
 
@@ -128,7 +126,7 @@ exports.getAllDigitalAssets = async (req, res) => {
     return res.status(200).json({
         status: "success",
         data: {
-            digital_assets: assets
+            digital_assets: assets,
         },
     });
 
