@@ -35,6 +35,5 @@ npm-debug.log
 
 upload/
 
-backend/build/
-
-backend/src/smart-contracts/ContractDetails.json
+build/
+src/smart-contracts/ContractDetails.json
