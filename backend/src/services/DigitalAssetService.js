@@ -13,6 +13,7 @@ const queryValidationSchema = Joi.object({
     category: Joi.string().max(255).truncate().trim(),
     name: Joi.string().max(255).truncate().trim(),
     owner_id: Joi.number(),
+    availability: Joi.boolean()
 });
 
 class DigitalAssetsNotFoundError extends Error {

@@ -66,28 +66,31 @@ class DigitalAsset {
         // TODO: sanitise input
 
         return new Promise(async (resolve, reject) => {
-
             let filter = [];
-            if (query.name) {
+            if (query.name !== undefined) {
                 filter.push(`name LIKE '%${query.name}%'`);
             }
-            if (query.min) {
+            if (query.min !== undefined) {
                 filter.push(`price >= ${query.min}`);
             }
-            if (query.max) {
+            if (query.max !== undefined) {
                 filter.push(`price <= ${query.max}`);
             }
-            if (query.start) {
+            if (query.start !== undefined) {
                 filter.push(`creation_date >= '${query.start}'`);
             }
-            if (query.end) {
+            if (query.end !== undefined) {
                 filter.push(`creation_date <= '${query.end}'`);
             }
-            if (query.category) {
+            if (query.category !== undefined) {
                 filter.push(`category LIKE '%${query.category}%'`);
             }
-            if (query.owner_id) {
+            if (query.owner_id !== undefined) {
                 filter.push(`owner_id = ${query.owner_id}`);
+            }
+
+            if (query.availability !== undefined) {
+                filter.push(`is_available = ${query.availability}`)
             }
 
             let querySQL = filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
