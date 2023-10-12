@@ -3,7 +3,7 @@ const Joi = require("joi").extend(require("@joi/date"));
 const DigitalAssetMarketContract = require("../smart-contracts/SmartContract");
 const web3 = require("../smart-contracts/Web3Instance");
 const User = require("../models/User");
-const Transaction = require("../models/Transaction");
+const TransactionService = require("../services/TransactionService");
 const {InvalidCredentialsError} = require("./UserService")
 const queryValidationSchema = Joi.object({
     max: Joi.number(),
@@ -132,12 +132,12 @@ exports.purchaseDigitalAsset = async (buyer_id,asset_id) => {
 
     await DigitalAsset.updateOwnership(asset_id,buyer_id);
 
-    await Transaction.createTransaction(new Transaction(
+    await TransactionService.createTransaction(
         transaction_hash,
         buyer_id,
         seller_id,
         asset_id,
-    ));
+    );
 }
 
 exports.DigitalAssetsNotFoundError = DigitalAssetsNotFoundError;
