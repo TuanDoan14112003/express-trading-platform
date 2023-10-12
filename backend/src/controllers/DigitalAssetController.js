@@ -158,6 +158,8 @@ exports.purchaseDigitalAsset = async (req, res) => {
     }
 
     let asset = { ...assets[0] };
+
+
     let users;
     try {
         users = await User.findUserById(req.user.id);
@@ -180,10 +182,17 @@ exports.purchaseDigitalAsset = async (req, res) => {
     let buyer_id = req.user.id;
     let userWallet = user.wallet_address;
 
-    if (buyer_id === asset.owner_id) {
+    if (buyer_id === seller_id) {
         return res.status(400).json({
             status: "fail",
             message: "You already own this item"
+        });
+    }
+
+    if (!asset.is_available) {
+        return res.status(400).json({
+            status: "fail",
+            message: "Item is not available"
         });
     }
 
