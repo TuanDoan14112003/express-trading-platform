@@ -52,7 +52,7 @@ function ProductForm() {
         };
         axios.post("http://localhost:8000/api/assets/",formData, config).then(res => {
             console.log(res)
-            navigate(`/product/${res.data.data.digital_asset.id}`)
+            navigate(`/product/${res.data.data.digital_asset.asset_id}`)
         }).catch(err => {
             console.log(err);
             // console.log(err.response.data.message);

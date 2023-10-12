@@ -88,7 +88,7 @@ function Filter({clicked,setFilter}) {
             // axios.get("http://localhost:8000/api/assets?name=test&min=2&max=20&start=2020-02-03&end=2023-10-06&category=fish")
                 .then((response) => {
                     console.log(response.data);
-                    setFilter(false);  // Moved here after successful API call
+                    handleCancelSort();
                     navigate(`/marketplace?${queryString}`)
                     // setData(response.data.data.digital_assets);
                 })
@@ -106,6 +106,12 @@ function Filter({clicked,setFilter}) {
         }
         // setFilter(false); // Close filter after API call
     };
+    const handleCancelSort= ()=>{
+        setMinPrice(0);
+        setMaxPrice(100);
+        setErrMsg("");
+        setFilter(false);
+    }
     // Return filter popup if clicked
     return clicked ? (
         <form onSubmit={handleSubmit} className="filter-popup">
@@ -152,7 +158,7 @@ function Filter({clicked,setFilter}) {
                     {errMsg !== "" && <p className="error-notice">{errMsg}</p>}
                     <div className="buttons">
                         <Button type="submit">Search</Button>
-                        <Button onClick={() => setFilter(false)} className="cancel-button" >Cancel</Button>
+                        <Button onClick={handleCancelSort} className="cancel-button" >Cancel</Button>
                     </div>
 
 
