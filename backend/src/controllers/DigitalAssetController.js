@@ -180,6 +180,13 @@ exports.purchaseDigitalAsset = async (req, res) => {
     let buyer_id = req.user.id;
     let userWallet = user.wallet_address;
 
+    if (buyer_id === asset.owner_id) {
+        return res.status(400).json({
+            status: "fail",
+            message: "You already own this item"
+        });
+    }
+
     let tx = {
         from: userWallet,
         to: DigitalAssetMarketContract.options.address,
