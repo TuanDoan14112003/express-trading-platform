@@ -3,7 +3,7 @@ const Joi = require('joi');
 const web3 = require("./../smart-contracts/Web3Instance");
 const DigitalAssetMarketContract = require("./../smart-contracts/SmartContract");
 const User = require("./../models/User");
-// const {Contract} = require("web3");
+
 const Transaction = require("./../models/Transaction");
 exports.createDigitalAsset = async (req,res) => {
     let assetData = req.body;
@@ -19,21 +19,51 @@ exports.createDigitalAsset = async (req,res) => {
     }
 
     const digitalAsset = new DigitalAsset(assetData.name,assetData.description,assetData.category,assetData.price,assetData.owner_id, req.fileName);
-    DigitalAsset.createDigitalAsset(digitalAsset, (err,data) => {
-        if (err) {
-            res.status(500).json({
-                status: "error",
-                message: "cannot create a new digital asset"
-            })
-        } else {
-            res.status(200).json({
-                status: "success",
-                data : {
-                    digital_asset: data
-                }
-            })
-        }
-    });
+    try {
+        let newAsset = await DigitalAsset.createDigitalAsset(digitalAsset);
+        DigitalAssetMarketContract.methods.createDigitalAsset(newAsset.asset_id,newAsset.owner_id,newAsset.name,newAsset.description,web3.utils.toWei(newAsset.price,"ether"),newAsset.category)
+        .send({from: (await web3.eth.getAccounts())[0], gas: 1000000})
+        return res.status(200).json({
+            status: "success",
+            data : {
+                digital_asset: newAsset
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            status: "error",
+            message: "cannot create a new digital asset"
+        })
+    }
+
+
+    // DigitalAsset.createDigitalAsset(digitalAsset, (err,data) => {
+    //     if (err) {
+    //         res.status(500).json({
+    //             status: "error",
+    //             message: "cannot create a new digital asset"
+    //         })
+    //     } else {
+    //         try {
+    //             DigitalAssetMarketContract.methods.createDigitalAsset(res.insertId,digitalAsset.owner_id,digitalAsset.name,digitalAsset.description,web3.utils.toWei(digitalAsset.price,"ether"),digitalAsset.category)
+    //                 .send({
+    //                     from: (await web3.eth.getAccounts())[0],
+    //                     gas: 1000000
+    //                 })
+    //         } catch (eth_error) {
+    //             console.log(eth_error);
+    //             return;
+    //         }
+    //         res.status(200).json({
+    //             status: "success",
+    //             data : {
+    //                 digital_asset: data
+    //             }
+    //         })
+    //     }
+    // });
+
+
 }
 
 exports.getAllDigitalAssets = (req,res) => {

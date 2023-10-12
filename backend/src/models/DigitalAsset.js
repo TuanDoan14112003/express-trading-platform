@@ -1,9 +1,16 @@
-const Joi = require('joi').extend(require('@joi/date'));
+const Joi = require("joi").extend(require("@joi/date"));
 const db = require("./DB");
 const web3 = require("./../smart-contracts/Web3Instance");
 const DigitalAssetMarketContract = require("./../smart-contracts/SmartContract");
 class DigitalAsset {
-    constructor(name,description,category,price,owner_id,image_name= null) {
+    constructor(
+        name,
+        description,
+        category,
+        price,
+        owner_id,
+        image_name = null,
+    ) {
         this.name = name;
         this.description = description;
         this.category = category;
@@ -14,58 +21,56 @@ class DigitalAsset {
 
     static getValidationSchema() {
         return Joi.object({
-                name: Joi.string().min(1).max(255).truncate().trim().required(),
-                description: Joi.string().min(1).max(255).truncate().trim().required(),
-                category: Joi.string().min(1).max(50).truncate().trim().required(),
-                price: Joi.number().precision(2).sign('positive').less(1000000).required(),
-                owner_id: Joi.number().sign('positive').required()
+            name: Joi.string().min(1).max(255).truncate().trim().required(),
+            description: Joi.string()
+                .min(1)
+                .max(255)
+                .truncate()
+                .trim()
+                .required(),
+            category: Joi.string().min(1).max(50).truncate().trim().required(),
+            price: Joi.number()
+                .precision(2)
+                .sign("positive")
+                .less(1000000)
+                .required(),
+            owner_id: Joi.number().sign("positive").required(),
         });
     }
 
-    static createDigitalAsset(digitalAsset, callback) {
-        db.query("INSERT INTO DigitalAssets SET ?", digitalAsset,
-        async (err, res) => {
-            if (err) {
-                console.log(err);
-                callback(err,null);
-                return;
-            }
-            try {
-                DigitalAssetMarketContract.methods.createDigitalAsset(res.insertId,digitalAsset.owner_id,digitalAsset.name,digitalAsset.description,web3.utils.toWei(digitalAsset.price,"ether"),digitalAsset.category)
-                    .send({
-                        from: (await web3.eth.getAccounts())[0],
-                        gas: 1000000
-                })
-            } catch (eth_error) {
-                console.log(eth_error);
-                callback(eth_error,null);
-                return;
-            }
-
-
-            // console.log(await DigitalAssetMarketContract.methods.digitalAssets(res.insertId).call({
-            //     from: (await web3.eth.getAccounts())[0]
-            // }));
-            callback(null, { id: res.insertId, ...digitalAsset });
-        })
+    static createDigitalAsset(digitalAsset) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                "INSERT INTO DigitalAssets SET ?",
+                digitalAsset,
+                (err, res) => {
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    }
+                    return resolve({ asset_id: res.insertId, ...digitalAsset });
+                },
+            );
+        });
     }
 
-    static getAllDigitalAssets(query,callback) {
+    static getAllDigitalAssets(query) {
         // TODO: sanitise input
         const queryValidationSchema = Joi.object({
             max: Joi.number(),
             min: Joi.number(),
-            start: Joi.date().format('YYYY-MM-DD').raw(),
-            end: Joi.date().format('YYYY-MM-DD').raw(),
+            start: Joi.date().format("YYYY-MM-DD").raw(),
+            end: Joi.date().format("YYYY-MM-DD").raw(),
             category: Joi.string().max(255).truncate().trim(),
             name: Joi.string().max(255).truncate().trim(),
-            owner_id: Joi.number()
+            owner_id: Joi.number(),
         });
 
-        const {value: validatedQuery, error} = queryValidationSchema.validate(query);
+        const { value: validatedQuery, error } =
+            queryValidationSchema.validate(query);
         if (error) {
             console.log(error);
-            callback(error,null);
+            callback(error, null);
             return;
         }
         console.log(validatedQuery);
@@ -78,7 +83,7 @@ class DigitalAsset {
             filter.push(`price >= ${validatedQuery.min}`);
         }
         if (validatedQuery.max) {
-            filter.push(`price <= ${validatedQuery.max}`)
+            filter.push(`price <= ${validatedQuery.max}`);
         }
         if (validatedQuery.start) {
             filter.push(`creation_date >= '${validatedQuery.start}'`);
@@ -92,58 +97,68 @@ class DigitalAsset {
         if (validatedQuery.owner_id) {
             filter.push(`owner_id = ${validatedQuery.owner_id}`);
         }
-        let filterMessage = filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
+        let filterMessage =
+            filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
         console.log(filterMessage);
-        db.query(`Select asset_id,name,price,description,category,owner_id,CONCAT(first_name,' ',last_name) as owner_name, creation_date,image_name, is_available 
-                 FROM DigitalAssets 
-                 INNER JOIN
-                    Users ON DigitalAssets.owner_id = Users.user_id
+        return new Promise((resolve, reject) => {
+            db.query(
+                `Select asset_id,name,price,description,category,owner_id,CONCAT(first_name,' ',last_name) as owner_name, creation_date,image_name, is_available 
+                FROM DigitalAssets 
+                INNER JOIN
+                Users ON DigitalAssets.owner_id = Users.user_id
                 ${filterMessage}
                 `,
-            (err, res) => {
-                if (err) {
-                    console.log(err);
-                    callback(err,null);
-                    return;
-                }
-                for (const row of res) {
-                    row.is_available = Boolean(Number(row.is_available));
-                }
-                callback(null, res);
-        })
+                (err, res) => {
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    }
+
+                    for (const row of res) {
+                        row.is_available = Boolean(Number(row.is_available));
+                    }
+                    return resolve(res);
+                },
+            );
+        });
     }
 
-    static getOneDigitalAsset(digitalAssetId,callback) {
-        db.query(`Select asset_id,name,price,description,category,owner_id,CONCAT(first_name,' ',last_name) as owner_name, creation_date, image_name, is_available 
+    static getOneDigitalAsset(digitalAssetId) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                `Select asset_id,name,price,description,category,owner_id,CONCAT(first_name,' ',last_name) as owner_name, creation_date, image_name, is_available 
                 FROM DigitalAssets 
                 INNER JOIN
                     Users ON DigitalAssets.owner_id = Users.user_id
-                WHERE asset_id='${digitalAssetId}
-'`,
-            (err, res) => {
-                if (err) {
-                    console.log(err);
-                    callback(err,null);
-                    return;
-                }
-                for (const row of res) {
-                    row.is_available = Boolean(Number(row.is_available));
-                }
-                callback(null, res);
-            })
+                WHERE asset_id='${digitalAssetId}'`,
+                (err, res) => {
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    }
+                    for (const row of res) {
+                        row.is_available = Boolean(Number(row.is_available));
+                    }
+                    return resolve(res);
+                },
+            );
+        });
     }
-    static updateOwnership(digitalAssetId,newOwnerId,callback) {
-        db.query("UPDATE DigitalAssets SET is_available = 0, owner_id = ? WHERE asset_id = ?", [newOwnerId,digitalAssetId],
-            (err, res) => {
-                if (err) {
-                    console.log(err);
-                    callback(err,null);
-                    return;
-                }
-                callback(null, res);
-            })
+    static updateOwnership(digitalAssetId, newOwnerId) {
+        return new Promise((resolve, reject) => {
+            db.query(
+                "UPDATE DigitalAssets SET is_available = 0, owner_id = ? WHERE asset_id = ?",
+                [newOwnerId, digitalAssetId],
+                (err, res) => {
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    }
+                    return resolve(res);
+                },
+            );
+        });
     }
-
 }
 
 module.exports = DigitalAsset;
