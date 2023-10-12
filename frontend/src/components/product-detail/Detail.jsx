@@ -43,7 +43,6 @@ const Detail = () => {
             }
         };
         fetchData();
-        console.log(product)
     }, []); // Empty dependency array means this useEffect runs once when component mounts
     if(loading)
     {
@@ -68,6 +67,7 @@ const Detail = () => {
             
             {/* Product Description */}
             <Description 
+                product={product}
                 className="description-tag" 
                 id={product.id} 
                 name={product.name} 

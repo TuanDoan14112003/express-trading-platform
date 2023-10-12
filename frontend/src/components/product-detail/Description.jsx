@@ -5,7 +5,7 @@ StudentId: 103509199
 last date modified: 03/09/2023
 */
 // React component for the product description section
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./Description.css";
 import {Link} from "react-router-dom";
 import Button from "../common/Button";
@@ -13,7 +13,7 @@ import CheckoutForm from "./CheckoutForm";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 // Description component receives product details as props
-const Description = ({id,owner_id,date, name, price, category, seller, description = "lorem"}) => {
+const Description = ({product,id,owner_id,date, name, price, category, seller, description = "lorem"}) => {
     const [checkoutForm, setCheckoutForm] = useState(false);
     const [checkUser,setCheckUser] = useState(false);
     const [cookies, setCookie] = useCookies(["user"]);
@@ -21,7 +21,9 @@ const Description = ({id,owner_id,date, name, price, category, seller, descripti
         return cookies.jwt_token ? true : false;
     };
     const [authStatus, setAuthStatus] = useState(isAuthenticated());
-    if(isAuthenticated())
+    useEffect(()=>{
+        console.log(1)
+        if(isAuthenticated())
     {
         const config = {
             headers: { Authorization: `Bearer ${cookies.jwt_token}`
@@ -35,13 +37,15 @@ const Description = ({id,owner_id,date, name, price, category, seller, descripti
             }
         })
     }
+    },[checkoutForm])
+    
     return (
         // Main container for the product description
         <div className="wrapper-description">
              {/* Container for product name and price */}
             <div className="container-brief">
                 <div className="item-name"> {name} ({category}) </div>
-                <div className="item-price"> {price} WEI</div>
+                <div className="item-price"> {price} ETH</div>
             </div>
              {/* Product description and seller details */}
             <div className="item-description"> 
@@ -54,7 +58,7 @@ const Description = ({id,owner_id,date, name, price, category, seller, descripti
                 <Button onClick={() => setCheckoutForm(true)}>Buy</Button>
             </div>}
            
-            <CheckoutForm setCheckoutForm={setCheckoutForm} opened={checkoutForm}/>
+            <CheckoutForm setCheckoutForm={setCheckoutForm} product={product} opened={checkoutForm}/>
         </div>
     );
 }

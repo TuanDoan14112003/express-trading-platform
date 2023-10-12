@@ -16,7 +16,7 @@ const Input = forwardRef((props,ref) => {
              {/* Conditional rendering: 
                  If the name prop is "description", render a textarea.
                  Otherwise, render an input field. */}
-            {props.name==="description" ? <textarea name={props.name} id={props.name}/> : <input ref={ref} onChange={props.onChange} name={props.name} type={props.type} id={props.name}/>}
+            {props.name==="description" ? <textarea name={props.name} id={props.name}/> : <input readOnly={props.readOnly} placeholder={props.placeholder} value={props.value} ref={ref} onChange={props.onChange} name={props.name} type={props.type} id={props.name}/>}
         </div>
     );
 })

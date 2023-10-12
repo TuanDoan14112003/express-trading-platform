@@ -36,7 +36,7 @@ function HistoryTable({transactions}) {
                                     <td data-label="Buyer">{transaction.buyer_name}</td>
                                     <td data-label="Date">{transaction.purchase_date}</td>
                                     <td data-label="Product">{transaction.asset_name}</td>
-                                    <td data-label="Price">{transaction.asset_price} WEI</td>
+                                    <td data-label="Price">{transaction.asset_price} ETH</td>
                                     <td data-label="Transaction Hash">
                                         <input
                                             type="text"

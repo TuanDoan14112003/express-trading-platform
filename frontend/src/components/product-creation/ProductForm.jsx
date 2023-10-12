@@ -43,9 +43,9 @@ function ProductForm() {
         formData.append("category", evt.target.category.value);
 
         // Append the image
-        formData.append("image", evt.target.image.files[0]);
-        console.log(cookies.jwt_token);
-        const config = {
+        if (evt.target.image.files[0]) {
+            formData.append("image", evt.target.image.files[0]);
+        }        const config = {
             headers: { Authorization: `Bearer ${cookies.jwt_token}`, 
             'Content-Type': 'multipart/form-data'
         }

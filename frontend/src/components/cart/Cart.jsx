@@ -4,10 +4,10 @@
 * StudentID: 103797499
 * Last date modified: 03/09/2023
 * */
-import "./Cart.css"
+import "./Cart1.css"
 import ProductList from "../marketplace/ProductList";
 import Button from "../common/Button";
-import CheckoutForm from "./CheckoutForm";
+// import CheckoutForm from "./CheckoutForm";
 import {useState} from "react"
 /*
 * Cart.jsx Component
@@ -54,7 +54,7 @@ function Cart() {
                 <Button onClick={() => setCheckoutForm(true)}  className="checkout" >Checkout</Button>
             </div>
             {/* Render the CheckoutForm component conditionally based on state */}
-            <CheckoutForm setCheckoutForm={setCheckoutForm} opened={checkoutForm}/>
+            {/* <CheckoutForm setCheckoutForm={setCheckoutForm} opened={checkoutForm}/> */}
         </div>
     )
 }

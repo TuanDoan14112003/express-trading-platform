@@ -18,7 +18,7 @@ Last date modified: 03/09/2023
     align-items: center;
 }
 /* Styling for the form container */
-.checkout-form form {
+.checkout {
     background-color: #4f4f62;
     width:40vw;
     min-width: 250px;
@@ -40,4 +40,13 @@ Last date modified: 03/09/2023
 /* Styling for form input elements */
 .checkout-form .form-input {
     margin-bottom: 20px;
+}
+.succes-notice{
+    margin: 5px;
+    text-align: center;
+    color: #B5CB99;
+}
+
+.header-deposit{
+    color: white;
 }
