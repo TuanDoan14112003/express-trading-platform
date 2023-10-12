@@ -1,7 +1,7 @@
 const User = require("./../models/User");
 const web3 = require("./../smart-contracts/Web3Instance");
 const DigitalAsset = require("./../models/DigitalAsset");
-const Joi = require("Joi");
+const Joi = require("Joi").extend(require('@joi/date'));;
 exports.getOneUser =  (req,res) => {
     User.findUserById(req.params.id, (err,data) => {
         if (err) {
@@ -93,8 +93,17 @@ exports.getBalance =  (req, res) => {
 exports.depositCoins =  async (req, res) => {
 
     const bodySchema = Joi.object().keys({
-        amount: Joi.number().precision(2).sign('positive').max(10).required()
-    });
+        amount: Joi.number().precision(2).sign('positive').max(10).required(),
+        card_number: Joi.string().creditCard().required().messages({
+                'string.creditCard': 'Invalid credit card number',
+        }),
+        card_holder: Joi.string().min(3).required(),
+        expiry_date: Joi.date().format('MM-YYYY').raw().required(),
+        cvv: Joi.string().length(3).pattern(/^[0-9]+$/).required().messages({
+                'string.length': 'CVV must be 3 digits long',
+                'string.pattern.base': 'CVV must contain only numbers',
+            })
+        });
 
     let bodyData = {...req.body};
 
