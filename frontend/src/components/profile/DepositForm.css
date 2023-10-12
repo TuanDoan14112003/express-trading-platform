@@ -23,7 +23,7 @@ Last date modified: 03/09/2023
     width:40vw;
     min-width: 250px;
     border-radius: 1.25rem;
-    padding:40px;
+    padding:20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -49,4 +49,45 @@ Last date modified: 03/09/2023
 
 .header-deposit{
     color: white;
+    margin: auto;
+    text-align: center;
+}
+
+.label-ipt{
+    color: white;
+    font-weight: 700;
+    float: left; /* Floating the label to the left */
+}
+
+.wrapper-ipt
+{
+    font-family: Roboto, sans-serif; /* Setting the font family */
+    display: inline-block; 
+    width: 100%; /* Taking full width of its parent container */
+    margin: 2px;
+    margin-top: 17px;
+}
+
+input{
+    box-sizing: border-box;
+    width: 100%;
+    font-family: Roboto, sans-serif;
+    margin-top:10px;
+    background-color: #3D3E51;
+    height: 2rem;
+    border-radius: 1.25rem;
+    border :none;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 300;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.half {
+    width: 43%; /* slightly less than half to account for any potential margins or paddings */
 }

@@ -26,7 +26,6 @@ function Profile() {
     const [cookies, setCookie] = useCookies(["user"]);
     const [userData,setUserData] = useState(null);
     const [balance, setBalance] = useState(800);
-    const [numAssets, setNumAssets] = useState(0);
     const navigate = useNavigate();
     const isAuthenticated = () => {
         return cookies.jwt_token ? true : false;
@@ -37,7 +36,9 @@ function Profile() {
     };
     const fetchBalance = async () => {
         const res_balance = await axios.get("http://localhost:8000/api/users/balance", config);
-        setBalance(res_balance.data.data.balance);
+        let num = parseFloat(res_balance.data.data.balance);
+        setBalance(num.toFixed(2));
+
     };
     useEffect(() => {
         if(isAuthenticated()){
@@ -47,7 +48,6 @@ function Profile() {
             const fetchUserAsset = async () =>{
                 const res_profile = await axios.get("http://localhost:8000/api/users/profile",config);
                 setUserData(res_profile.data.data.user);
-                setNumAssets(res_profile.data.data.user.digital_assets.length )
             }
             fetchBalance();
             fetchUserAsset();
@@ -65,16 +65,18 @@ function Profile() {
         <div className="cart">
             <div className="cart-body">
                 <h1>Your Profile</h1>
-                <h2>Balance: {balance} ETH</h2>
+                
+                <div className="btn-container">
+                    <h2>Balance: {balance} ETH</h2>
+                    <Button onClick={() => setDepositForm(true)}  className="btn-deposit">Deposit</Button>
+                </div>  
                 {userData && userData.digital_assets.length !== 0 && <ProductList productList={userData.digital_assets} />}
                 {userData && userData.digital_assets.length === 0&& 
                 <div className="center-screen-profile">
                     <img src={Error404} alt="" />
                     <h2 className="error-heading">There is no asset available</h2>
                 </div>}
-                <div className="btn-container">
-                    <Button onClick={() => setDepositForm(true)}  className="btn-deposit">Deposit</Button>
-                </div>               
+                             
              <DepositForm fetchBalance={fetchBalance} setDepositForm={setDepositForm} opened={depositForm}/>
             </div>
         </div>
