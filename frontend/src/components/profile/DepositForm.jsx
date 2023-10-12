@@ -63,28 +63,28 @@ function DepositForm({opened, setDepositForm}) {
                 <h2 className="header-deposit">Input Your Card to Deposit</h2>
                 <div className="wrapper-ipt">
                     <label className="label-ipt" htmlFor="card-number">Card Number</label><br/>
-                    <input  type="text" value={cardNumber} onChange={e => setCardNumber(e.target.value)} placeholder="xxxx xxxx xxxx xxxx"  name="card-number" label="Card Number"/>
+                    <input className="deposit-ipt"  type="text" value={cardNumber} onChange={e => setCardNumber(e.target.value)} placeholder="xxxx xxxx xxxx xxxx"  name="card-number" label="Card Number"/>
                 </div>
 
                 <div className="wrapper-ipt">
                     <label className="label-ipt" htmlFor="card-holder">Card Holder</label><br/>
-                    <input type="text" value={cardholderName} onChange={e => setCardholderName(e.target.value)}  placeholder="Cardholder Name"   name="card-holder" label=" Holder"/>
+                    <input className="deposit-ipt" type="text" value={cardholderName} onChange={e => setCardholderName(e.target.value)}  placeholder="Cardholder Name"   name="card-holder" label=" Holder"/>
                 </div>
                 <div  className="row">
                     <div className="wrapper-ipt half">
                         <label className="label-ipt" htmlFor="expiry-date">Expiry Date</label><br/>
-                        <input type="text" value={expiryDate} onChange={e => setExpiryDate(e.target.value)} placeholder="MM-YYYY" name="expiry-date" label="Expiry Date"/>
+                        <input className="deposit-ipt" type="text" value={expiryDate} onChange={e => setExpiryDate(e.target.value)} placeholder="MM-YYYY" name="expiry-date" label="Expiry Date"/>
                     </div>
 
                     <div className="wrapper-ipt half">
                         <label className="label-ipt" htmlFor="cvv">CVV</label><br/>
-                        <input type="text" value={cvv} onChange={e => setCvv(e.target.value)} placeholder="CVV" name="cvv" label="CVV"/>
+                        <input className="deposit-ipt" type="text" value={cvv} onChange={e => setCvv(e.target.value)} placeholder="CVV" name="cvv" label="CVV"/>
                     </div>
                 </div>
 
                 <div className="wrapper-ipt">
                     <label className="label-ipt" htmlFor="amount">Amount</label><br/>
-                    <input className="label-ipt" type="number" value={amount} onChange={e => setAmount(e.target.value)} name="amount" label="Amount"/>
+                    <input className="deposit-ipt" type="number" value={amount} onChange={e => setAmount(e.target.value)} name="amount" label="Amount"/>
                 </div>
                 {errMsg !== "" && <div className="error-notice">{errMsg}</div>}
                 {successMsg !== "" && <div className="succes-notice">{successMsg}</div>}

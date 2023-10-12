@@ -68,7 +68,7 @@ Last date modified: 03/09/2023
     margin-top: 17px;
 }
 
-input{
+.deposit-ipt{
     box-sizing: border-box;
     width: 100%;
     font-family: Roboto, sans-serif;

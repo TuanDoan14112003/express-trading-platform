@@ -13,6 +13,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import Error404 from "../../assets/error-404.png";
 import DepositForm from "./DepositForm";
+import LoadingSpinner from "../common/LoadingSpinner";
 /*
 * Cart.jsx Component
 * This component allows users review and finalize their selected assets before confirming their purchases.
@@ -26,6 +27,7 @@ function Profile() {
     const [cookies, setCookie] = useCookies(["user"]);
     const [userData,setUserData] = useState(null);
     const [balance, setBalance] = useState(800);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const isAuthenticated = () => {
         return cookies.jwt_token ? true : false;
@@ -51,6 +53,7 @@ function Profile() {
             }
             fetchBalance();
             fetchUserAsset();
+            setLoading(false);
         }
     }, [depositForm]);
     if(!authStatus){
@@ -61,10 +64,17 @@ function Profile() {
             </div>
         )
     }
+    if(loading)
+    {
+        return  <div className="center-screen">
+                    <LoadingSpinner/>
+                    <h1>Loading ...</h1>
+                </div>;
+    }
     return (
         <div className="cart">
             <div className="cart-body">
-                <h1> {`${userData.user_name}'s Profile`}</h1>
+                {userData && <h1> {`${userData.user_name}'s Profile`}</h1>}
                 
                 <div className="btn-container">
                     <h2 >Balance: {balance} ETH</h2>
