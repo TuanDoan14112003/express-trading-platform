@@ -11,7 +11,6 @@ CREATE TABLE Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     password VARCHAR(255) NOT NULL,
     wallet_address VARCHAR(255) NOT NULL,
-    public_key VARCHAR(255) NOT NULL,
     private_key VARCHAR(255) NOT NULL,
     UNIQUE (email)
 );
@@ -23,7 +22,7 @@ CREATE TABLE DigitalAssets (
     owner_id INT NOT NULL,
     name VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,
-    price DECIMAL NOT NULL,
+    price DECIMAL(8,2) NOT NULL,
     category VARCHAR(255) NOT NULL,
     image_name VARCHAR(500),
     creation_date DATE NOT NULL DEFAULT (CURRENT_DATE),
