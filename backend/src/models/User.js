@@ -3,90 +3,77 @@ const Joi = require("joi");
 const web3 = require("./../smart-contracts/Web3Instance");
 const DigitalAssetMarketContract = require("./../smart-contracts/SmartContract");
 class User {
-    constructor(first_name,last_name,email,password) {
+    constructor(first_name,last_name,email,password,private_key,wallet_address) {
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
         this.password = password;
+        this.private_key = private_key;
+        this.wallet_address = wallet_address;
     }
-    static getRegisterValidationSchema() {
+    static userValidationSchema() {
         return Joi.object({
             first_name: Joi.string().min(1).max(255).truncate().alphanum().required(),
             last_name:Joi.string().min(1).max(255).truncate().alphanum().required(),
             email: Joi.string().email().required(),
-            password: Joi.string().min(8).required()
-        });
-    }
-
-    static getLoginValidationSchema() {
-        return Joi.object({
-            email: Joi.string().email().required(),
             password: Joi.string().min(8).required(),
+            private_key: Joi.string().required(),
+            wallet_address: Joi.string().required()
         });
     }
 
-    static async register(user,callback) {
-        const web3Account = web3.eth.accounts.create();
 
-        const {address:wallet_address,privateKey:private_key} = web3Account;
+    static async createUser(user) {
+        return new Promise(async (resolve,reject) => {
+            let newUser = {...user};
+            try {
+                await User.userValidationSchema().validateAsync(newUser);
+            } catch (error) {
+                return reject(error);
+            }
 
-        const newUser = {...user,wallet_address:web3Account.address,private_key:web3Account.privateKey};
-        // console.log(web3Account);
-        const accounts = await web3.eth.getAccounts();
-        //
-        // await web3.eth.sendTransaction({
-        //     from: accounts[0],
-        //     to: newUser.wallet_address,
-        //     value: 10000000000000000000,
-        // });
+            db.query("INSERT INTO Users SET ?", newUser,
+                (err, res) => {
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    }
+                    console.log(newUser)
+                    newUser.password = undefined; // remove password from the returned message
+                    newUser.private_key = undefined; // remove private key from the returned message
+                    return resolve({ user_id: res.insertId, ...newUser });
+            })
+        })
+    }
 
-        const balance = await web3.eth.getBalance(newUser.wallet_address);
-        console.log("Balance:", web3.utils.fromWei(balance, 'ether'), "ether");
-        db.query("INSERT INTO Users SET ?", newUser,
-            async (err, res) => {
+
+
+
+
+    static findUserByEmail(email) {
+        return new Promise((resolve,reject) => {
+            db.query(`SELECT user_id,first_name,last_name,email,password FROM Users WHERE email='${email}'`, (err,res) => {
                 if (err) {
                     console.log(err);
-                    callback(err,null);
-                    return;
+                    return reject(err);
                 }
-                try {
-                    DigitalAssetMarketContract.methods.createUser(res.insertId, newUser.last_name, newUser.email, newUser.wallet_address).send({
-                        from: accounts[0],
-                        gas: 1000000
-                    });
-                } catch (eth_error) {
-                    console.log(eth_error);
-                    callback(eth_error,null);
-                    return;
-                }
-
-                newUser.password = undefined; // remove password from the returned message
-                newUser.private_key = undefined; // remove private key from the returned message
-                callback(null, { user_id: res.insertId, ...newUser });
-        })
-    }
-
-    static findUserByEmail(email, callback) {
-        db.query(`SELECT user_id,first_name,last_name,email,password FROM Users WHERE email='${email}'`, (err,res) => {
-            if (err) {
-                console.log(err);
-                callback(err,null);
-                return;
-            }
-            callback(null,  res);
+                resolve(res);
+            })
         })
     }
 
 
-    static findUserById(id, callback) {
-        db.query(`SELECT user_id,email,wallet_address,private_key FROM Users WHERE user_id='${id}'`, (err,res) => {
-            if (err) {
-                console.log(err);
-                callback(err,null);
-                return;
-            }
-            callback(null,  res);
+    static findUserById(id) {
+        return new Promise((resolve,reject) => {
+            db.query(`SELECT CONCAT(first_name,' ',last_name) as user_name,user_id,email,wallet_address,private_key FROM Users WHERE user_id='${id}'`, (err,res) => {
+                if (err) {
+                    console.log(err);
+                    return reject(err);
+                }
+                return resolve(res);
+            })
         })
+
     }
 
 
