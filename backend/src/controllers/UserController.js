@@ -1,7 +1,8 @@
 const User = require("./../models/User");
 const web3 = require("./../smart-contracts/Web3Instance");
 const DigitalAsset = require("./../models/DigitalAsset");
-const Joi = require("Joi").extend(require('@joi/date'));
+const Joi = require("joi").extend(require('@joi/date'));
+
 const creditCardValidation = Joi.object().keys({
     amount: Joi.number().precision(2).sign('positive').max(10).required(),
     card_number: Joi.string().creditCard().required().messages({

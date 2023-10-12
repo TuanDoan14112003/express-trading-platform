@@ -12,6 +12,7 @@ class InvalidCredentialsError extends Error {
 }
 
 
+
 exports.createUser = async (first_name,last_name,email,password) => {
     const web3Account = web3.eth.accounts.create();
     const user = new User(first_name,last_name,email,password,web3Account.privateKey,web3Account.address);

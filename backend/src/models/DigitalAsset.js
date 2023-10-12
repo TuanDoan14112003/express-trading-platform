@@ -1,7 +1,6 @@
 const Joi = require("joi").extend(require("@joi/date"));
 const db = require("./DB");
-const web3 = require("./../smart-contracts/Web3Instance");
-const DigitalAssetMarketContract = require("./../smart-contracts/SmartContract");
+
 class DigitalAsset {
     constructor(
         name,
@@ -67,56 +66,40 @@ class DigitalAsset {
         // TODO: sanitise input
 
         return new Promise(async (resolve, reject) => {
-            const queryValidationSchema = Joi.object({
-                max: Joi.number(),
-                min: Joi.number(),
-                start: Joi.date().format("YYYY-MM-DD").raw(),
-                end: Joi.date().format("YYYY-MM-DD").raw(),
-                category: Joi.string().max(255).truncate().trim(),
-                name: Joi.string().max(255).truncate().trim(),
-                owner_id: Joi.number(),
-            });
-            let validatedQuery;
-
-            try {
-                validatedQuery =
-                    await queryValidationSchema.validateAsync(query);
-            } catch (validationError) {
-                return reject(validationError);
-            }
 
             let filter = [];
-            if (validatedQuery.name) {
-                filter.push(`name LIKE '%${validatedQuery.name}%'`);
+            if (query.name) {
+                filter.push(`name LIKE '%${query.name}%'`);
             }
-            if (validatedQuery.min) {
-                filter.push(`price >= ${validatedQuery.min}`);
+            if (query.min) {
+                filter.push(`price >= ${query.min}`);
             }
-            if (validatedQuery.max) {
-                filter.push(`price <= ${validatedQuery.max}`);
+            if (query.max) {
+                filter.push(`price <= ${query.max}`);
             }
-            if (validatedQuery.start) {
-                filter.push(`creation_date >= '${validatedQuery.start}'`);
+            if (query.start) {
+                filter.push(`creation_date >= '${query.start}'`);
             }
-            if (validatedQuery.end) {
-                filter.push(`creation_date <= '${validatedQuery.end}'`);
+            if (query.end) {
+                filter.push(`creation_date <= '${query.end}'`);
             }
-            if (validatedQuery.category) {
-                filter.push(`category LIKE '%${validatedQuery.category}%'`);
+            if (query.category) {
+                filter.push(`category LIKE '%${query.category}%'`);
             }
-            if (validatedQuery.owner_id) {
-                filter.push(`owner_id = ${validatedQuery.owner_id}`);
+            if (query.owner_id) {
+                filter.push(`owner_id = ${query.owner_id}`);
             }
 
-            let filterMessage =
-                filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
-            console.log(filterMessage);
+            let querySQL = filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
+
+            console.log(querySQL);
+
             db.query(
                 `Select asset_id,name,price,description,category,owner_id,CONCAT(first_name,' ',last_name) as owner_name, creation_date,image_name, is_available 
                 FROM DigitalAssets 
                 INNER JOIN
                 Users ON DigitalAssets.owner_id = Users.user_id
-                ${filterMessage}
+                ${querySQL}
                 `,
                 (queryError, res) => {
                     if (queryError) {
@@ -124,16 +107,13 @@ class DigitalAsset {
                         return reject(queryError);
                     }
 
-                    for (const row of res) {
-                        row.is_available = Boolean(Number(row.is_available));
-                    }
                     return resolve(res);
                 },
             );
         });
     }
 
-    static getOneDigitalAsset(digitalAssetId) {
+    static findDigitalAssetById(digitalAssetId) {
         return new Promise((resolve, reject) => {
             db.query(
                 `Select asset_id,name,price,description,category,owner_id,CONCAT(first_name,' ',last_name) as owner_name, creation_date, image_name, is_available 
