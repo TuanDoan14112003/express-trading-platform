@@ -17,8 +17,8 @@ class DigitalAsset {
                 name: Joi.string().min(1).max(255).truncate().trim().required(),
                 description: Joi.string().min(1).max(255).truncate().trim().required(),
                 category: Joi.string().min(1).max(50).truncate().trim().required(),
-                price: Joi.number().required(),
-                owner_id: Joi.number().required()
+                price: Joi.number().precision(2).sign('positive').less(1000000).required(),
+                owner_id: Joi.number().sign('positive').required()
         });
     }
 
@@ -30,11 +30,19 @@ class DigitalAsset {
                 callback(err,null);
                 return;
             }
-             DigitalAssetMarketContract.methods.createDigitalAsset(res.insertId,digitalAsset.owner_id,digitalAsset.name,digitalAsset.description,digitalAsset.price,digitalAsset.category)
-                .send({
-                    from: (await web3.eth.getAccounts())[0],
-                    gas: 1000000
+            try {
+                DigitalAssetMarketContract.methods.createDigitalAsset(res.insertId,digitalAsset.owner_id,digitalAsset.name,digitalAsset.description,web3.utils.toWei(digitalAsset.price,"ether"),digitalAsset.category)
+                    .send({
+                        from: (await web3.eth.getAccounts())[0],
+                        gas: 1000000
                 })
+            } catch (eth_error) {
+                console.log(eth_error);
+                callback(eth_error,null);
+                return;
+            }
+
+
             // console.log(await DigitalAssetMarketContract.methods.digitalAssets(res.insertId).call({
             //     from: (await web3.eth.getAccounts())[0]
             // }));
@@ -50,7 +58,8 @@ class DigitalAsset {
             start: Joi.date().format('YYYY-MM-DD').raw(),
             end: Joi.date().format('YYYY-MM-DD').raw(),
             category: Joi.string().max(255).truncate().trim(),
-            name: Joi.string().max(255).truncate().trim()
+            name: Joi.string().max(255).truncate().trim(),
+            owner_id: Joi.number()
         });
 
         const {value: validatedQuery, error} = queryValidationSchema.validate(query);
@@ -79,6 +88,9 @@ class DigitalAsset {
         }
         if (validatedQuery.category) {
             filter.push(`category LIKE '%${validatedQuery.category}%'`);
+        }
+        if (validatedQuery.owner_id) {
+            filter.push(`owner_id = ${validatedQuery.owner_id}`);
         }
         let filterMessage = filter.length === 0 ? "" : "WHERE " + filter.join(" AND ");
         console.log(filterMessage);
@@ -121,7 +133,7 @@ class DigitalAsset {
             })
     }
     static updateOwnership(digitalAssetId,newOwnerId,callback) {
-        db.query("UPDATE DigitalAssets SET owner_id = ? WHERE asset_id = ?", [newOwnerId,digitalAssetId],
+        db.query("UPDATE DigitalAssets SET is_available = 0, owner_id = ? WHERE asset_id = ?", [newOwnerId,digitalAssetId],
             (err, res) => {
                 if (err) {
                     console.log(err);
