@@ -13,20 +13,29 @@ import Marketplace from "./components/marketplace/Marketplace";
 import History from "./components/history/History";
 import Cart from "./components/cart/Cart";
 import ProductCreation from "./components/product-creation/ProductCreation";
+import Profile from "./components/profile/Profile";
 import Layout from "./components/common/Layout";
+import { useState } from "react";
+import { useCookies} from "react-cookie";
 function App() {
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+  const isAuthenticated = () => {
+        return cookies.jwt_token ? true : false;
+    };
+  const [authStatus, setAuthStatus] = useState(isAuthenticated());
   return (
     // Using the Routes component to define the routing for the application
     <Routes>
         <Route path="/" element={<Landing/>} />
          {/* Using the Layout component to wrap multiple routes */}
-        <Route element={<Layout/>}>
+        <Route element={<Layout authStatus={authStatus} setAuthStatus={setAuthStatus}/>}>
             <Route path="/marketplace" element={<Marketplace/>} />
             <Route path="/history" element={<History/>} />
             <Route path="/cart" element={<Cart/>} />
             <Route path="/create-product" element={<ProductCreation/>} />
             <Route path="/product/:id" element={<Detail/>} />
-            <Route path="/login" element={<LoginPage/>} />
+            <Route path="/login" element={<LoginPage authStatus={authStatus} setAuthStatus={setAuthStatus}/>} />
+            <Route path="/profile" element={<Profile/>} />
         </Route>
     </Routes>
   );

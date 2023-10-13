@@ -6,64 +6,67 @@ Last date modified: 02/09/2023
  */
 import "./Marketplace.css";
 import FilterIcon from "../../assets/filter.svg";
+import LoadingSpinner from "../common/LoadingSpinner";
 import ProductList from "./ProductList";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import Filter from "../common/Filter";
-
-const productList = [ // Sample product list data
-    {
-        id: 1,
-        title: "Product 1",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 2,
-        title: "Product 2",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 3,
-        title: "Product 3",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 4,
-        title: "Product 4",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 5,
-        title: "Product 5",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 6,
-        title: "Product 6",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 7,
-        title: "Product 7",
-        seller: "Tuan Doan",
-        price: 200
-    },
-    {
-        id: 8,
-        title: "Product 8",
-        seller: "Tuan Doan",
-        price: 200
-    },
-]
+import Error404 from "../../assets/error-404.png";
+import axios from 'axios';
+import { useLocation } from "react-router-dom";
 function Marketplace() {
     // State to manage the visibility of the filter
     const [isFilterClicked, setFilterClicked] = useState(false);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const location = useLocation();
+    useEffect(() => {
+        // The API endpoint
+        setLoading(true);
+        setError(null);
+        const apiUrl = 'http://localhost:8000/api/assets/';
+        let fullURL =""
+        if(location.search==""){
+            fullURL = `${apiUrl}?availability=true`;
+        }
+        else{
+            fullURL = `${apiUrl}${location.search}`;
+        }
+        axios.get(fullURL)
+            .then(response => {
+                setData(response.data.data.digital_assets);
+                setLoading(false);
+            })
+            .catch(err => {
+                setError(err);
+                setLoading(false);
+                console.log(err.response ? true : false);
+            });
+    }, [location.search]);
 
+    if(loading)
+    {
+        return  <div className="center-screen">
+                    <LoadingSpinner/>
+                    <h1>Loading ...</h1>
+                </div>;
+    }
+    if(error){
+        if(error.response ? true : false)
+        {
+            return <div className="center-screen">
+            <img src={Error404} alt="" />
+            <h1>{error.response.data.message}</h1>
+            </div>;    
+        }
+        else{
+            return <div className="center-screen">
+            <img src={Error404} alt="" />
+            <h1>{error.message}</h1>
+        </div>;
+    
+        }
+    }
     return (
         // Main container for the marketplace
         <div className="marketplace">
@@ -75,7 +78,8 @@ function Marketplace() {
                     <img className="icon-filter" onClick={() => setFilterClicked(true)} src={FilterIcon} alt="Filter Icon" />
                 </div>
                 {/* Rendering the list of products */}
-                <ProductList productList={productList} />
+                {loading && <p>Loading...</p>}
+                {!loading && <ProductList productList={data} />}
             </div>
             {/* Filter component */}
             <Filter clicked={isFilterClicked} setFilter={setFilterClicked} />

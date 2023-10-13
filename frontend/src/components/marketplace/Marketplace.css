@@ -16,6 +16,15 @@ Last date modified: 02/09/2023
     text-align: center;
 }
 
+.center-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;  /* Full height of the viewport */
+    margin: 0;      /* Removing default body margin */
+    color: white;
+}
+
 /* Styling for the filter icon */
 .icon-filter {
     /* Makes the icon clickable */

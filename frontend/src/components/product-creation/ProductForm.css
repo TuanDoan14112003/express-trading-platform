@@ -20,8 +20,14 @@ Last date modified: 02/09/2023
     margin-bottom: 30px;
 }
 
+.error-notice{
+    margin: 5px;
+    text-align: center;
+    color: #FF6969;
+}
+
 /* Styling for the submit button inside the product form */
-.product-form input[type=submit] {
+.product-form button {
     margin-top: 40px;
     width: 100px;
     height: 40px;

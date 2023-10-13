@@ -8,6 +8,8 @@ last date modified: 03/09/2023
 import React, { useState } from "react";
 import "./LoginSection.css";
 import { useNavigate } from "react-router-dom";
+import {CookiesProvide, useCookies} from "react-cookie";
+import axios from 'axios';
 
 /**
  * Register Component
@@ -22,10 +24,14 @@ const Register = () => {
 
     // State to manage form data
     const [formData, setFormData] = useState({
-        username: "",
+        firstname: "",
+        lastname: "",
+        email: "",
         password: "",
         confirmPassword: "",
     });
+    const [errMsg, setErrMsg] = useState("");   
+    const [successMsg, setSuccessMsg] = useState("");
 
     /**
      * Handle input changes and update the formData state.
@@ -41,22 +47,62 @@ const Register = () => {
      * Handle the form submission.
      * For the purpose of this example, it redirects the user to the marketplace after registration.
      */
-    const handleSubmit = () => {
-        navigate("/marketplace");
+    const handleSubmit = (evt) => {
+        evt.preventDefault();
+        setSuccessMsg("");
+       
+        if(evt.target.password.value == evt.target.confirmPassword.value)
+        {
+            setErrMsg("");
+            axios.post("http://localhost:8000/api/auth/register/",{
+                "first_name": evt.target.firstname.value,
+                "last_name": evt.target.lastname.value,
+                "email": evt.target.email.value, 
+                "password": evt.target.password.value,
+            }).then(res => {
+                console.log(res)
+                setSuccessMsg("Register Successfully!")
+            }).catch(err => {
+                console.log(err);
+                setErrMsg(err.response.data.message);
+            });
+        }
+        else{
+            setErrMsg("Passwords do not match")
+        }
+
     };
 
     return (
-        <div className="form-container" id="login-form">
+        <form method="POST" onSubmit={handleSubmit} className="form-container" id="register-form">
             <h2>Account Register</h2>
-            {/* Username Input */}
-            <label className="label-form" htmlFor="username">Username</label>
+            <label className="label-form" htmlFor="firstname">First Name</label>
             <input className="ipt-form"
                 type="text"
-                placeholder="Username"
-                value={formData.username}
+                placeholder="First Name"
+                value={formData.firstname}
                 onChange={handleChange}
-                name="username"
-                id="username"
+                name="firstname"
+                id="firstname"
+            />
+            <label className="label-form" htmlFor="lastname">Last Name</label>
+            <input className="ipt-form"
+                type="text"
+                placeholder="Last Name"
+                value={formData.lastname}
+                onChange={handleChange}
+                name="lastname"
+                id="lastname"
+            />
+            {/* Username Input */}
+            <label className="label-form" htmlFor="email">Email</label>
+            <input className="ipt-form"
+                type="text"
+                placeholder="email@xyz.com"
+                value={formData.email}
+                onChange={handleChange}
+                name="email"
+                id="email"
             />
             {/* Password Input */}
             <label className="label-form" htmlFor="password">Password</label>
@@ -78,9 +124,11 @@ const Register = () => {
                 id="confirmPassword"
                 name="confirmPassword"
             />
+            {successMsg !== "" && <p className="success-notice">{successMsg} Please <a href="">login</a></p>}
+            {errMsg !== "" && <p className="error-notice">{errMsg}</p>}
             {/* Registration Button */}
-            <button className="btn-submit" onClick={handleSubmit}>Register Account</button>
-        </div>
+            <button type="submit" className="btn-submit" >Register Account</button>
+        </form>
     );
 }
 
