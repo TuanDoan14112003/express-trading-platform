@@ -22,17 +22,16 @@ import { useCookies} from "react-cookie";
 const LoginPage = ({authStatus, setAuthStatus}) => {
     // State to manage the active button (authentication or register)
     const [activeButton, setActiveButton] = useState("authentication");
-    const [cookies, setCookie] = useCookies(["user"]);
+    const [cookies] = useCookies(["user"]);
     const navigate = useNavigate();
-    const isAuthenticated = () => {
+    const isAuthenticated = () => { //check if use already login
         return cookies.jwt_token ? true : false;
     };
     useEffect(() => {
-        if (isAuthenticated()) {
+        if (isAuthenticated()) { //if user already logined navigate them to other page
             navigate("/marketplace");  // Redirect to the dashboard or desired page
         }
     }, [cookies.jwt_token]);
-    console.log(cookies.jwt_token);
     // Function to update the active form based on user interaction
     const handleButtonClick = (buttonName) => {
         setActiveButton(buttonName);

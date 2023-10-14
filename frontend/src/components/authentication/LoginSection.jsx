@@ -60,27 +60,22 @@ const LoginSection = ({authStatus, setAuthStatus}) => {
      * Handle the form submission.
      * For the purpose of this example, it redirects the user to the marketplace.
      */
-    let user = {
-        "email": "tuandoan14112003@gmail.com",
-        "password": "12345678"
-    }
     const handleSubmit = (evt) => {
         evt.preventDefault();
-        axios.post("http://localhost:8000/api/auth/login/",{
+        axios.post("http://localhost:8000/api/auth/login/",{ //api to login
             "email": evt.target.email.value, 
             "password": evt.target.password.value,
         }).then(res => {
-            saveJWTinCookie(res.data.data.access_token);
-            setAuthStatus(true);
+            saveJWTinCookie(res.data.data.access_token); //save token into cookie
+            setAuthStatus(true); 
             console.log(authStatus);
-            navigate("/marketplace");
+            navigate("/marketplace"); //navigate to marketplace
         }).catch(err => {
-            // console.log(err.response.data.message);
-            if(err.response ? true: false)
+            if(err.response ? true: false) //axios error
             {
                 setErrMsg(err.response.data.message)
             }
-            else{
+            else{ //other error
                 setErrMsg(err.message)
             }
         });
@@ -111,21 +106,6 @@ const LoginSection = ({authStatus, setAuthStatus}) => {
                 name="password"
             />
             {errMsg !== "" && <p className="error-notice">{errMsg}</p>}
-            {/* Remember Me Checkbox and Forgot Password Link */}
-            {/* <div className="wrapper-option">
-                <div className="remember">
-                    <input 
-                        type="checkbox" 
-                        id="rememberMe" 
-                        name="rememberMe"
-                        checked={formData.rememberMe} 
-                        onChange={handleCheckboxChange}
-                    />
-                    <label htmlFor="rememberMe">Remember me</label>
-                </div> 
-                
-                <Link to="/login">Forgot Password?</Link>
-            </div> */}
             {/* Login Button */}
             <button type ="submit" className="btn-submit" > login</button>
         </form>

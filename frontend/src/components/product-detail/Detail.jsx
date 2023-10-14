@@ -23,15 +23,15 @@ const Detail = () => {
     // Extracting the product ID from the URL parameters
     const { id } = useParams();
 
-    const [product, setProduct] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [product, setProduct] = useState([]); //fetch the product
+    const [loading, setLoading] = useState(true); //loading state
     const [error, setError] = useState(null);
     useEffect(()  => {
         // The API endpoint
         const fetchData = async () => {
             const apiUrl = `http://localhost:8000/api/assets/${id}`;
             try {
-                const response = await axios.get(apiUrl);
+                const response = await axios.get(apiUrl); //try to fecth the asset data
                 var temp = response.data.data.digital_asset;
                 // await fetchSeller(temp);
                 setProduct(temp); 
@@ -44,13 +44,13 @@ const Detail = () => {
         };
         fetchData();
     }, []); // Empty dependency array means this useEffect runs once when component mounts
-    if(loading)
+    if(loading) //loading display
     {
         return <div className="center-screen">
         <LoadingSpinner/>
     </div>;
     }
-    if(error){
+    if(error){ //error display
         return <div className="center-screen">
                     <LoadingSpinner/>
                     <p className="error-message">Error: {error.message}</p>

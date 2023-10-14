@@ -13,40 +13,39 @@ import axios from "axios";
 import "./History.css";
 // This component serves as a wrapper for displaying the transaction history
 function History() {
-    const [transaction, setTransaction] = useState([]);
-    const [cookies, setCookie] = useCookies(["user"]);
-    const [errMsg, setErrMsg] = useState("");
+    const [transaction, setTransaction] = useState([]); //save the transaction history
+    const [cookies, setCookie] = useCookies(["user"]); //load cookie
+    const [errMsg, setErrMsg] = useState(""); //error message
     const navigate = useNavigate();
-    const isAuthenticated = () => {
+    const isAuthenticated = () => { //check whether user login or not
         return cookies.jwt_token ? true : false;
     };
     const [authStatus, setAuthStatus] = useState(isAuthenticated());
     useEffect(()=>{
-        if(isAuthenticated())
+        if(isAuthenticated()) //only fetch data if user already login
         {
-            const config = {
+            const config = { //add token to fetch api
                 headers: { Authorization: `Bearer ${cookies.jwt_token}`
             }
             };
             axios.get("http://localhost:8000/api/users/profile/transactions", config)
                 .then(response => {
-                    setTransaction(response.data.data.transactions);
+                    setTransaction(response.data.data.transactions); //set the data of transaction history
                     console.log(response.data.data.transactions)
                 })
                 .catch(err => {
                     console.log(err);
-                    if(err.response ? true: false)
+                    if(err.response ? true: false) //error from axios
                     {
                         setErrMsg(err.response.data.message)
                     }
-                    else{
-                       
+                    else{ //other error
                         setErrMsg(err.message)
                     }
                 });    
         }
     },[])
-    if(!authStatus){
+    if(!authStatus){ //if not login notice and navigate user to login page
         return (
             <div className="center-screen">
                 <h1>You need to login to access this page!</h1>
@@ -54,7 +53,7 @@ function History() {
             </div>
         )
     }
-    if(errMsg !==""){
+    if(errMsg !==""){ //if there is error render the error
         console.log(errMsg)
         return <div className="center-screen">
         <img src={Error404} alt="" />

@@ -11,17 +11,17 @@ import {useState} from "react";
 import { useCookies} from "react-cookie";
 // ProductCreation component definition
 function ProductCreation() {
-    const [cookies, setCookie] = useCookies(["user"]);
-    const isAuthenticated = () => {
+    const [cookies, setCookie] = useCookies(["user"]);//get the cookie
+    const isAuthenticated = () => { //check if the user already logined or not
         return cookies.jwt_token ? true : false;
     };
     const [authStatus, setAuthStatus] = useState(isAuthenticated());
     const navigate = useNavigate();
-    if(!authStatus){
+    if(!authStatus){ // if user has not logined, dont allow access
         return (
             <div className="center-screen">
                 <h1>You need to login to access this page!</h1>
-                <button onClick={()=>{navigate("/login")}}>Login</button>
+                <button onClick={()=>{navigate("/login")}}>Login</button> 
             </div>
         )
     }

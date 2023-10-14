@@ -43,73 +43,71 @@ function Filter({clicked,setFilter}) {
         event.target.style.background = `linear-gradient(to right, #615DFA ${val}%, white ${val}%)`;
 
     }
-    function handleMinSlider(event) {
+    function handleMinSlider(event) { //handle the color when sliding for min slider
         handleSliderInput(event);
         setMinPrice(event.target.value);
     }
 
-    function handleMaxSlider(event) {
+    function handleMaxSlider(event) { //handle the color when sliding for max slider
         handleSliderInput(event);
         setMaxPrice(event.target.value);
     }
     const handleSubmit = (event) => {
         event.preventDefault();
         const baseURL = "http://localhost:8000/api/assets";
-        const queryParams = [];
+        const queryParams = []; //get all params of filter
 
-        if (minPrice > 0) {
+        if (minPrice > 0) { //check if user try to use min price
             queryParams.push(`min=${minPrice}`);
         }
     
-        if (maxPrice > 0) {
+        if (maxPrice > 0) { //check if user try to use max price
             queryParams.push(`max=${maxPrice}`);
         }
         let today = new Date();
-        if (date1!== null && date1.toISOString().split('T')[0] !== today.toISOString().split('T')[0]) {
+        if (date1!== null && date1.toISOString().split('T')[0] !== today.toISOString().split('T')[0]) { //check if user try to use start date
             queryParams.push(`start=${date1.toISOString().split('T')[0]}`);
         }
 
-        if (date2!== null && date2.toISOString().split('T')[0] !== today.toISOString().split('T')[0]) {
+        if (date2!== null && date2.toISOString().split('T')[0] !== today.toISOString().split('T')[0]) { //check if user try to use end date
             queryParams.push(`end=${date2.toISOString().split('T')[0]}`);
         }
 
-        if (category !== "") {
+        if (category !== "") { //check if user try to use category
             queryParams.push(`category=${category}`);
         }
 
-        const queryString = queryParams.join('&');
+        let queryString = queryParams.join('&'); //join all param together
+
         // Make the API call with axios
         if(queryString == "")
         {
-            setErrMsg("Need to choose at least 1 feature to filter")
+            setErrMsg("Need to choose at least 1 feature to filter")//if there is none set error
         }
         else{
+            queryString += "&availability=true"; //just fecth assets available for trading
             axios.get(`${baseURL}?${queryString}`)
-            // axios.get("http://localhost:8000/api/assets?name=test&min=2&max=20&start=2020-02-03&end=2023-10-06&category=fish")
                 .then((response) => {
                     console.log(response.data);
                     handleCancelSort();
-                    navigate(`/marketplace?${queryString}`)
-                    // setData(response.data.data.digital_assets);
+                    navigate(`/marketplace?${queryString}`) //navigate to markplaceplace with query string
                 })
                 .catch((err) => {
                     console.log(err);
-                    if(err.response ? true: false)
+                    if(err.response ? true: false) //error by axios
                     {
                         setErrMsg(err.response.data.message)
                     }
-                    else{
+                    else{ //other error
                         setErrMsg(err.message)
                     }
-                    // console.error("Error fetching data:", error.response.data);
                 });    
         }
-        // setFilter(false); // Close filter after API call
     };
-    const handleCancelSort= ()=>{
-        setMinPrice(0);
+    const handleCancelSort= ()=>{ //close the filter componenet
+        setMinPrice(0); //reset slider
         setMaxPrice(100);
-        setErrMsg("");
+        setErrMsg(""); //reset error message
         setFilter(false);
     }
     // Return filter popup if clicked

@@ -12,25 +12,25 @@ import Error404 from "../../assets/error-404.png";
 import axios from 'axios';
 import { useLocation } from "react-router-dom";
 function Marketplace() {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const location = useLocation();
+    const [data, setData] = useState([]); //data of assets fetched by the api
+    const [loading, setLoading] = useState(true); //loading state
+    const [error, setError] = useState(null); //error message
+    const location = useLocation(); //location to extract query from the api
     useEffect(() => {
         // The API endpoint
-        setLoading(true);
+        setLoading(true); //set loading state to true when first load
         setError(null);
         const apiUrl = 'http://localhost:8000/api/assets/';
         let fullURL =""
-        if(location.search==""){
-            fullURL = `${apiUrl}?availability=true`;
+        if(location.search==""){ //if this is the normal marketplace without any sorting task
+            fullURL = `${apiUrl}?availability=true`; //just fetch assets available for trading
         }
         else{
-            fullURL = `${apiUrl}${location.search}`;
+            fullURL = `${apiUrl}${location.search}`; //extract the sort query
         }
         axios.get(fullURL)
             .then(response => {
-                setData(response.data.data.digital_assets);
+                setData(response.data.data.digital_assets); //set data of found assets
                 setLoading(false);
             })
             .catch(err => {
@@ -38,24 +38,23 @@ function Marketplace() {
                 setLoading(false);
                 console.log(err.response ? true : false);
             });
-    }, [location.search]);
+    }, [location.search]); //re-fecth the api whenever the query is changed
 
-    if(loading)
+    if(loading) //loading status
     {
         return  <div className="center-screen">
                     <LoadingSpinner/>
                     <h1>Loading ...</h1>
                 </div>;
     }
-    if(error){
-        if(error.response ? true : false)
+    if(error){ //error status
+        if(error.response ? true : false) //axios error
         {
             return <div className="center-screen">
-            <img src={Error404} alt="" />
             <h1>{error.response.data.message}</h1>
             </div>;    
         }
-        else{
+        else{ //other error
             return <div className="center-screen">
             <img src={Error404} alt="" />
             <h1>{error.message}</h1>

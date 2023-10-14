@@ -102,7 +102,6 @@ function Profile() {
                 {userData && userData.digital_assets.length !== 0 && <ProductList productList={userData.digital_assets} />}
                 {userData && userData.digital_assets.length === 0&& 
                 <div className="center-screen-profile">
-                    <img src={Error404} alt="" />
                     <h2 className="error-heading">There is no asset available</h2>
                 </div>}
                              
