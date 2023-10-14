@@ -28,6 +28,7 @@ function Profile() {
     const [userData,setUserData] = useState(null);
     const [balance, setBalance] = useState(800);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
     const isAuthenticated = () => {
         return cookies.jwt_token ? true : false;
@@ -37,19 +38,30 @@ function Profile() {
         headers: { Authorization: `Bearer ${cookies.jwt_token}` }
     };
     const fetchBalance = async () => {
-        const res_balance = await axios.get("http://localhost:8000/api/users/balance", config);
-        let num = parseFloat(res_balance.data.data.balance);
-        setBalance(num.toFixed(2));
-
+        if(isAuthenticated)
+        {
+            try{
+                const res_balance = await axios.get("http://localhost:8000/api/users/balance", config);
+                let num = parseFloat(res_balance.data.data.balance);
+                setBalance(num.toFixed(2));        
+            }
+            catch (err){
+                setError(err);
+                setLoading(false);
+                console.log(err);
+            }
+        }
     };
     useEffect(() => {
-        if(isAuthenticated()){
-            console.log("hello")
-           
-           
+        if(isAuthenticated()){           
             const fetchUserAsset = async () =>{
-                const res_profile = await axios.get("http://localhost:8000/api/users/profile",config);
-                setUserData(res_profile.data.data.user);
+                axios.get("http://localhost:8000/api/users/profile",config).then(res=>{
+                    setUserData(res.data.data.user);
+                }).catch(err=>{
+                    setError(err);
+                    setLoading(false);
+                    console.log(err);
+                });
             }
             fetchBalance();
             fetchUserAsset();
@@ -71,13 +83,20 @@ function Profile() {
                     <h1>Loading ...</h1>
                 </div>;
     }
+    if(error){
+        return <div className="center-screen">
+                    <LoadingSpinner/>
+                    <p className="error-message">Error: {error.message}<br/> Try to login again</p>
+                </div>;
+    }
     return (
         <div className="cart">
             <div className="cart-body">
                 {userData && <h1> {`${userData.user_name}'s Profile`}</h1>}
                 
                 <div className="btn-container">
-                    <h2 >Balance: {balance} ETH</h2>
+                    {userData && <h2 >Balance: {balance} ETH</h2>}
+                    
                     <Button onClick={() => setDepositForm(true)}  className="btn-deposit">Deposit</Button>
                 </div>  
                 {userData && userData.digital_assets.length !== 0 && <ProductList productList={userData.digital_assets} />}
