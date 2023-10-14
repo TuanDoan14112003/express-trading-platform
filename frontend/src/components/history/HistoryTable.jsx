@@ -8,7 +8,6 @@ last date modified: 03/09/2023
 import "./HistoryTable.css";
 import { useState } from "react";
 function HistoryTable({transactions}) {
-    console.log(transactions)
     return (
         // Main container for the transaction history table
         <div className="table-container">
@@ -40,8 +39,8 @@ function HistoryTable({transactions}) {
                                     <td data-label="Transaction Hash">
                                         <input
                                             type="text"
-                                            readOnly
-                                            value={transaction.transaction_hash}
+                                            readOnly //only allow user to read and copy
+                                            value={transaction.transaction_hash} 
                                             className='hash-input'
                                         />
                                     </td>

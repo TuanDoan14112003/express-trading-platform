@@ -43,23 +43,24 @@ function ProductForm() {
         formData.append("category", evt.target.category.value);
 
         // Append the image
-        if (evt.target.image.files[0]) {
+        if (evt.target.image.files[0]) { //check if user uploaded an image or not
             formData.append("image", evt.target.image.files[0]);
-        }        const config = {
+        }        
+        const config = { //config containing token and form data
             headers: { Authorization: `Bearer ${cookies.jwt_token}`, 
             'Content-Type': 'multipart/form-data'
         }
         };
         axios.post("http://localhost:8000/api/assets/",formData, config).then(res => {
             console.log(res)
-            navigate(`/product/${res.data.data.digital_asset.asset_id}`)
+            navigate(`/product/${res.data.data.digital_asset.asset_id}`) //if success navigate to the detail page of the newly created asset
         }).catch(err => {
             console.log(err);
-            if(err.response ? true: false)
+            if(err.response ? true: false) //axios error
             {
                 setErrMsg(err.response.data.message)
             }
-            else{
+            else{ //other error
                 setErrMsg(err.message)
             }
         });

@@ -14,30 +14,29 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 // Description component receives product details as props
 const Description = ({product,id,owner_id,date, name, price, category, seller, description = "lorem"}) => {
-    const [checkoutForm, setCheckoutForm] = useState(false);
-    const [checkUser,setCheckUser] = useState(false);
-    const [cookies, setCookie] = useCookies(["user"]);
-    const isAuthenticated = () => {
+    const [checkoutForm, setCheckoutForm] = useState(false); //state to keep state of opeing the checkout form
+    const [checkUser,setCheckUser] = useState(false); //keep track whether user has the right to purchase the item or not
+    const [cookies, setCookie] = useCookies(["user"]); //get the cookie
+    const isAuthenticated = () => { //check whether user login or not
         return cookies.jwt_token ? true : false;
     };
     const [authStatus, setAuthStatus] = useState(isAuthenticated());
     useEffect(()=>{
-        console.log(1)
-        if(isAuthenticated())
+        if(isAuthenticated()) //just check when user login
     {
-        const config = {
+        const config = { //config to send access token with api
             headers: { Authorization: `Bearer ${cookies.jwt_token}`
         }
         };
         axios.get("http://localhost:8000/api/users/profile", config)
         .then(res=>{
             let current_id = res.data.data.user.user_id;
-            if(current_id != owner_id){
+            if(current_id != owner_id){ //if user does not own the asset then they have the right to buy
                 setCheckUser(true);
             }
         })
     }
-    },[checkoutForm])
+    },[checkoutForm]) //re-check whenever user close the checkout form 
     
     return (
         // Main container for the product description
@@ -53,7 +52,7 @@ const Description = ({product,id,owner_id,date, name, price, category, seller, d
                 <div className="item-owner">Created Date: {date}</div>
                 {description} 
             </div>
-             {/* Buy button container */}
+             {/* Buy button container only allow if user has the right*/}
              {authStatus && checkUser &&  <div className="container-button">
                 <Button onClick={() => setCheckoutForm(true)}>Buy</Button>
             </div>}

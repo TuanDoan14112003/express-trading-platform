@@ -30,17 +30,16 @@ function History() {
             };
             axios.get("http://localhost:8000/api/users/profile/transactions", config)
                 .then(response => {
-                    setTransaction(response.data.data.transactions);
+                    setTransaction(response.data.data.transactions); //set the data of transaction history
                     console.log(response.data.data.transactions)
                 })
                 .catch(err => {
                     console.log(err);
-                    if(err.response ? true: false)
+                    if(err.response ? true: false) //error from axios
                     {
                         setErrMsg(err.response.data.message)
                     }
-                    else{
-                       
+                    else{ //other error
                         setErrMsg(err.message)
                     }
                 });    
@@ -54,7 +53,7 @@ function History() {
             </div>
         )
     }
-    if(errMsg !==""){
+    if(errMsg !==""){ //if there is error render the error
         console.log(errMsg)
         return <div className="center-screen">
         <img src={Error404} alt="" />

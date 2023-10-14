@@ -11,7 +11,6 @@ import {Link} from "react-router-dom";
 
 // This component displays individual product details wrapped inside a ProductCard
 function Product({id, title, price, image}) {
-    console.log(image)
     return (
         // Using the ProductCard component as a wrapper
         <ProductCard>
