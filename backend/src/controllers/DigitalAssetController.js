@@ -17,7 +17,7 @@ exports.createDigitalAsset = async (req, res) => {
         } else  if (error instanceof  InvalidResponseError) {
             return res.status(500).json({
                 status: "fail",
-                message: "Web3.js " + error.message,
+                message: "Web3.js: " + error.message,
             });
         }
         else {
@@ -49,7 +49,7 @@ exports.getAllDigitalAssets = async (req, res) => {
         } else if (error instanceof  DigitalAssetService.DigitalAssetsNotFoundError) {
             return res.status(404).json({
                 status: "fail",
-                message: "Digital assets not found",
+                message: "There is no available assets. You can login and sell a new asset",
             });
         } else {
             return res.status(500).json({
@@ -82,7 +82,7 @@ exports.getOneDigitalAsset = async (req, res) => {
         if (error instanceof DigitalAssetService.DigitalAssetsNotFoundError) {
             return res.status(404).json({
                 status: "fail",
-                message: "Cannot find the digital asset",
+                message: "Digital Asset not found"
             });
         } else {
             return res.status(500).json({
@@ -117,7 +117,7 @@ exports.purchaseDigitalAsset = async (req, res) => {
         } else if (error instanceof DigitalAssetService.DigitalAssetsNotFoundError) {
             return res.status(404).json({
                 status: "fail",
-                message: "Cannot find the digital asset",
+                message: "Digital Asset not found",
             });
         } else if (error instanceof UserService.InvalidCredentialsError) {
             return res.status(400).json({
