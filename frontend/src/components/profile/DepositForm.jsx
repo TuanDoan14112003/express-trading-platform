@@ -84,7 +84,7 @@ function DepositForm({opened, setDepositForm}) {
 
                 <div className="wrapper-ipt">
                     <label className="label-ipt" htmlFor="amount">Amount</label><br/>
-                    <input className="deposit-ipt" type="number" value={amount} onChange={e => setAmount(e.target.value)} name="amount" label="Amount"/>
+                    <input className="deposit-ipt" step="0.01" type="number" value={amount} onChange={e => setAmount(e.target.value)} name="amount" label="Amount"/>
                 </div>
                 {errMsg !== "" && <div className="error-notice">{errMsg}</div>}
                 {successMsg !== "" && <div className="succes-notice">{successMsg}</div>}

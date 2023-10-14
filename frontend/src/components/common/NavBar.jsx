@@ -11,27 +11,19 @@ import Filter from "./Filter";
 import {Link, useNavigate} from "react-router-dom";
 import {useState, useEffect} from "react";
 import { useCookies} from "react-cookie";
-import axios from "axios";
 function NavBar({authStatus, setAuthStatus}) {
     const [isFilterClicked, setFilterClicked] = useState(false); // State for handling filter click
     const [isMenuActive,setMenuActive] = useState(false); // State for handling mobile menu activation
     const [bgColor, setBgColor] = useState('transparent');  // State for handling navbar background color on scroll
-    const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+    const [cookies, setCookie, removeCookie] = useCookies(["user"]); //cookie to check authentication
     const [searchValue, setSearchValue] = useState("");
-    const isAuthenticated = () => {
-        return cookies.jwt_token ? true : false;
-    };
-    // const [authStatus, setAuthStatus] = useState(isAuthenticated());
     const navigate = useNavigate();
-    // useEffect(() => {
-    //     setAuthStatus(isAuthenticated());
-    // }, [cookies.jwt_token]);
     
     const HandleLogout = (evt) => {
         evt.preventDefault();
-        removeCookie('jwt_token', { path: '/' });
+        removeCookie('jwt_token', { path: '/' }); //remove token from cookie when logout
         setAuthStatus(false);  // Update authStatus after logout
-        navigate("/login");
+        navigate("/login"); //navigate to login page
     }
 
     useEffect(() => { // useEffect hook to add a scroll event listener
@@ -82,6 +74,7 @@ function NavBar({authStatus, setAuthStatus}) {
                     <img onClick={() => setFilterClicked(true)} className="filter-icon" src={FilterIcon} alt="" /> {/* Filter icon */}
 
                     <nav className="links"> {/* Navigation links for desktop */}
+                        {/*conditional rendering based on authentication status  */}
                         {!authStatus && <Link to="/login">Login</Link>}
                         {authStatus && <Link onClick={HandleLogout}>Logout</Link>}
                         <Link to="/marketplace">Market</Link>
