@@ -49,7 +49,9 @@ Last date modified: 02/09/2023
 .hide {
     display: none;
 }
-
+.text-input{
+    width: 50vw;
+}
 /* Responsive styles for screens with a width of up to 1200px */
 @media (max-width: 1200px) {
     .product-form {

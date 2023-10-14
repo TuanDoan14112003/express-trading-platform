@@ -11,7 +11,6 @@ import Detail from "./components/product-detail/Detail";
 import LoginPage from './components/authentication/LoginPage';
 import Marketplace from "./components/marketplace/Marketplace";
 import History from "./components/history/History";
-import Cart from "./components/cart/Cart";
 import ProductCreation from "./components/product-creation/ProductCreation";
 import Profile from "./components/profile/Profile";
 import Layout from "./components/common/Layout";
@@ -31,7 +30,6 @@ function App() {
         <Route element={<Layout authStatus={authStatus} setAuthStatus={setAuthStatus}/>}>
             <Route path="/marketplace" element={<Marketplace/>} />
             <Route path="/history" element={<History/>} />
-            <Route path="/cart" element={<Cart/>} />
             <Route path="/create-product" element={<ProductCreation/>} />
             <Route path="/product/:id" element={<Detail/>} />
             <Route path="/login" element={<LoginPage authStatus={authStatus} setAuthStatus={setAuthStatus}/>} />
