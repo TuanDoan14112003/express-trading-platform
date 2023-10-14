@@ -49,7 +49,7 @@ exports.getAllDigitalAssets = async (req, res) => {
         } else if (error instanceof  DigitalAssetService.DigitalAssetsNotFoundError) {
             return res.status(404).json({
                 status: "fail",
-                message: "There is no available assets. You can login and make a new asset",
+                message: "There is no available assets. You can login and sell a new asset",
             });
         } else {
             return res.status(500).json({
