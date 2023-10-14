@@ -76,7 +76,7 @@ function ProductForm() {
             <div className="text-input">
                 <Input type="text" name="name" label="Name" required />
                 <Input type="text" name="description" label="Description" required/>
-                <Input type="number" name="price" label="Price" required/>
+                <Input type="number" step="0.01" name="price" label="Price" required/>
                 <Input type="text" name="category" label="Category" required/>
                 {errMsg !== "" && <p className="error-notice">{errMsg}</p>}
                 {/* Submit button to navigate to the marketplace */}
