@@ -87,7 +87,6 @@ function NavBar({authStatus, setAuthStatus}) {
                         <Link to="/marketplace">Market</Link>
                         <Link to="/history">History</Link>
                         <Link to="/create-product">Sell a product</Link>
-                        <Link to="/cart">Cart</Link>
                         <Link to="/profile">Profile</Link>
                     </nav>
                      {/* Hamburger menu button for mobile */}
@@ -104,7 +103,6 @@ function NavBar({authStatus, setAuthStatus}) {
                 <Link onClick={() => setMenuActive(false)} to="/marketplace">Market</Link>
                 <Link onClick={() => setMenuActive(false)} to="/history">History</Link>
                 <Link onClick={() => setMenuActive(false)} to="/create-product">Sell a product</Link>
-                <Link onClick={() => setMenuActive(false)} to="/cart">Cart</Link>
             </nav>
            <Filter clicked={isFilterClicked} setFilter={setFilterClicked} /> {/* Filter component */}
         </>
