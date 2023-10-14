@@ -77,13 +77,15 @@ function Filter({clicked,setFilter}) {
             queryParams.push(`category=${category}`);
         }
 
-        const queryString = queryParams.join('&');
+        let queryString = queryParams.join('&');
+
         // Make the API call with axios
         if(queryString == "")
         {
             setErrMsg("Need to choose at least 1 feature to filter")
         }
         else{
+            queryString += "&availability=true";
             axios.get(`${baseURL}?${queryString}`)
             // axios.get("http://localhost:8000/api/assets?name=test&min=2&max=20&start=2020-02-03&end=2023-10-06&category=fish")
                 .then((response) => {

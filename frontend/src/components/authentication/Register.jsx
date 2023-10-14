@@ -7,8 +7,6 @@ last date modified: 03/09/2023
 // Importing necessary libraries and modules
 import React, { useState } from "react";
 import "./LoginSection.css";
-import { useNavigate } from "react-router-dom";
-import {CookiesProvide, useCookies} from "react-cookie";
 import axios from 'axios';
 
 /**
@@ -20,7 +18,6 @@ import axios from 'axios';
  */
 const Register = () => {
     // Hook from react-router for programmatic navigation
-    const navigate = useNavigate();
 
     // State to manage form data
     const [formData, setFormData] = useState({
@@ -30,8 +27,8 @@ const Register = () => {
         password: "",
         confirmPassword: "",
     });
-    const [errMsg, setErrMsg] = useState("");   
-    const [successMsg, setSuccessMsg] = useState("");
+    const [errMsg, setErrMsg] = useState("");    //error message
+    const [successMsg, setSuccessMsg] = useState(""); //success message
 
     /**
      * Handle input changes and update the formData state.
@@ -49,22 +46,22 @@ const Register = () => {
      */
     const handleSubmit = (evt) => {
         evt.preventDefault();
-        setSuccessMsg("");
+        setSuccessMsg(""); //reset success message
        
-        if(evt.target.password.value == evt.target.confirmPassword.value)
+        if(evt.target.password.value == evt.target.confirmPassword.value) //check if the password match
         {
             setErrMsg("");
-            axios.post("http://localhost:8000/api/auth/register/",{
+            axios.post("http://localhost:8000/api/auth/register/",{ //api to register
                 "first_name": evt.target.firstname.value,
                 "last_name": evt.target.lastname.value,
                 "email": evt.target.email.value, 
                 "password": evt.target.password.value,
             }).then(res => {
                 console.log(res)
-                setSuccessMsg("Register Successfully!")
+                setSuccessMsg("Register Successfully!") //set success message
             }).catch(err => {
                 console.log(err);
-                setErrMsg(err.response.data.message);
+                setErrMsg(err.response.data.message); //set error message
             });
         }
         else{
@@ -124,6 +121,7 @@ const Register = () => {
                 id="confirmPassword"
                 name="confirmPassword"
             />
+            {/* conditional rendering with success and error */}
             {successMsg !== "" && <p className="success-notice">{successMsg} Please <a href="">login</a></p>}
             {errMsg !== "" && <p className="error-notice">{errMsg}</p>}
             {/* Registration Button */}

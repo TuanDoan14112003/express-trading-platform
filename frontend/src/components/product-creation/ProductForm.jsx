@@ -55,7 +55,6 @@ function ProductForm() {
             navigate(`/product/${res.data.data.digital_asset.asset_id}`)
         }).catch(err => {
             console.log(err);
-            // console.log(err.response.data.message);
             if(err.response ? true: false)
             {
                 setErrMsg(err.response.data.message)
@@ -76,7 +75,7 @@ function ProductForm() {
             <div className="text-input">
                 <Input type="text" name="name" label="Name" required />
                 <Input type="text" name="description" label="Description" required/>
-                <Input type="number" step="0.01" name="price" label="Price" required/>
+                <Input type="number" step="0.01" name="price" label="Price in ETH (round to 2 decimal places)" required/>
                 <Input type="text" name="category" label="Category" required/>
                 {errMsg !== "" && <p className="error-notice">{errMsg}</p>}
                 {/* Submit button to navigate to the marketplace */}
