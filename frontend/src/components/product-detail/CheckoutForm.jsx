@@ -75,7 +75,7 @@ function CheckoutForm({opened, setCheckoutForm,product}) {
                 {successMsg !== "" && <div className="succes-notice">{successMsg}</div>}
 
                 <div>
-                    <Button onClick={handleCancel} className="cancel-button">Cancel</Button>
+                    <Button onClick={handleCancel} className="cancel-button">Close</Button>
                     <Button onClick={handlePurchase} disable={isDisabled} className="purchase-button" >Purchase</Button>
                 </div>
             </form>
