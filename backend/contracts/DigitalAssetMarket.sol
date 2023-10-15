@@ -121,6 +121,7 @@ contract DigitalAssetMarket {
     }
 
     function removeValueFromArray(uint256[] storage arr, uint256 value) private {
+        // remove a value from an array
         for (uint256 i = 0; i < arr.length; i++) {
             if (arr[i] == value) {
                 if (i != arr.length - 1) {
