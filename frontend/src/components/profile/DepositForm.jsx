@@ -1,8 +1,8 @@
 /*
 * File name: DepositForm.jsx
-* Author: Dang Khanh Toan Nguyen
-* StudentID: 103797499
-* Last date modified: 03/09/2023
+* Author: Gia Hung Tran
+* StudentID: 103509199
+* Last date modified: 15/10/2023
 * */
 import Input from "../common/Input";
 import "./DepositForm.css";

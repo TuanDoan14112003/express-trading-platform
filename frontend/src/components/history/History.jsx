@@ -2,7 +2,7 @@
 filename: History.jsx
 Author: Anh Tuan Doan
 StudentId: 103526745
-last date modified: 03/09/2023
+last date modified: 15/10/2023
 */
 import HistoryTable from "./HistoryTable";
 import { useEffect, useState } from "react";

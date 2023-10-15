@@ -2,7 +2,7 @@
 filename: Detail.jsx
 Author: Gia Hung Tran
 StudentId: 103509199
-last date modified: 03/09/2023
+last date modified: 15/10/2023
 */
 import React from "react";
 import Description from "./Description";

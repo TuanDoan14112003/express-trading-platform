@@ -2,7 +2,7 @@
 filename: UserService.js
 Author: Anh Tuan Doan
 StudentId: 103526745
-last date modified: 03/09/2023
+last date modified: 15/10/2023
 */
 const web3 = require("../smart-contracts/Web3Instance");
 const User = require("../models/User");

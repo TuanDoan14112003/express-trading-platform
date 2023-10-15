@@ -2,7 +2,7 @@
 filename: Description.jsx
 Author: Gia Hung Tran
 StudentId: 103509199
-last date modified: 03/09/2023
+last date modified: 15/10/2023
 */
 // React component for the product description section
 import React, {useEffect, useState} from "react";

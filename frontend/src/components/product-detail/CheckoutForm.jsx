@@ -2,7 +2,7 @@
 * File name: CheckoutForm.jsx
 * Author: Dang Khanh Toan Nguyen
 * StudentID: 103797499
-* Last date modified: 03/09/2023
+* Last date modified: 15/10/2023
 * */
 import Input from "../common/Input";
 import "./CheckoutForm.css";

@@ -1,8 +1,8 @@
 /*
 filename: SmartContract.js
-Author: Anh Tuan Doan
-StudentId: 103526745
-last date modified: 03/09/2023
+Author: Dang Khanh Toan Nguyen
+StudentId: 103797499
+last date modified: 15/10/2023
 */
 const web3 = require("./Web3Instance");
 const fs = require("fs");

@@ -2,7 +2,7 @@
 filename: Input.jsx
 Author: Anh Tuan Doan
 StudentId: 103526745
-last date modified: 03/09/2023
+last date modified: 15/10/2023
 */
 import "./Input.css"
 import {forwardRef} from "react";
