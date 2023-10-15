@@ -75,6 +75,11 @@ exports.depositCoins =  async (req, res) => {
                 status: "fail",
                 message: "User not found"
             })
+        } else if (error instanceof  UserService.CoinLimitReached) {
+            return res.status(400).json({
+                status: "fail",
+                message: error.message
+            })
         } else {
             return res.status(500).json({
                 status: "error",

@@ -17,6 +17,13 @@ const creditCardValidation = Joi.object().keys({
     })
 });
 
+class CoinLimitReached extends Error {
+    constructor() {
+        super("Maximum coin limit reached. You must redeploy the project to reset the limit");
+        this.name = "CoinLimitReached";
+    }
+}
+
 class InvalidCredentialsError extends Error {
     constructor() {
         super("Invalid credentials");
@@ -104,15 +111,32 @@ exports.depositCoinsToUserBalance = async (user_id,creditCardData) => {
     await creditCardValidation.validateAsync(creditCardData);
     const user = await exports.findUserById(user_id);
     const accounts = await web3.eth.getAccounts();
+    let account_number = 0;
+    while (true) {
+        if (account_number === 10) {
+            throw new CoinLimitReached();
+        }
+        try {
+            await web3.eth.sendTransaction({
+                from: accounts[account_number],
+                to: user.wallet_address,
+                value: web3.utils.toWei(creditCardData.amount,"ether"),
+            });
+            return;
+        } catch (error) {
+            if (error.reason.includes("insufficient balance")) {
+                account_number++;
+            } else {
+                throw error;
+            }
+        }
+    }
 
-    await web3.eth.sendTransaction({
-        from: accounts[0],
-        to: user.wallet_address,
-        value: web3.utils.toWei(creditCardData.amount,"ether"),
-    });
+
 
 }
 
 exports.InvalidCredentialsError = InvalidCredentialsError;
 exports.UserNotFound = UserNotFound;
+exports.CoinLimitReached = CoinLimitReached;
 
