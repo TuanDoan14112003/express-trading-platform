@@ -63,7 +63,7 @@ const LoginSection = ({authStatus, setAuthStatus}) => {
     const handleSubmit = (evt) => {
         evt.preventDefault();
         axios.post("http://localhost:8000/api/auth/login/",{ //api to login
-            "email": evt.target.email.value, 
+            "email": evt.target.email.value.trim(), 
             "password": evt.target.password.value,
         }).then(res => {
             saveJWTinCookie(res.data.data.access_token); //save token into cookie
