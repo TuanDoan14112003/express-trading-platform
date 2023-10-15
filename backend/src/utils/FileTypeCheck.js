@@ -1,5 +1,13 @@
+/*
+filename: FileTypeCheck.js
+Author: Anh Tuan Doan
+StudentId: 103526745
+last date modified: 03/09/2023
+*/
 const path = require('path');
 
+// Validates whether a provided file is an image based on its extension and MIME type.
+// If valid, invokes the callback (cb) with null and true, otherwise invokes cb with an error message.
 module.exports = function (file, cb) {
     //Allowed file extensions
     const fileTypes = /jpeg|jpg|png|gif|svg/;

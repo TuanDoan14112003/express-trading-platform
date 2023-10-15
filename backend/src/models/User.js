@@ -1,9 +1,16 @@
+/*
+filename: User.js
+Author: Anh Tuan Doan
+StudentId: 103526745
+last date modified: 03/09/2023
+*/
 const db = require("./DB");
 const Joi = require("joi");
 const web3 = require("./../smart-contracts/Web3Instance");
 const DigitalAssetMarketContract = require("./../smart-contracts/SmartContract");
 class User {
     constructor(first_name,last_name,email,password,private_key,wallet_address) {
+        // Initializing properties for the User instance.
         this.first_name = first_name;
         this.last_name = last_name;
         this.email = email;
@@ -12,6 +19,7 @@ class User {
         this.wallet_address = wallet_address;
     }
     static userValidationSchema() {
+        // Returning a Joi object schema for user data validation.
         return Joi.object({
             first_name: Joi.string().min(1).max(255).truncate().alphanum().required(),
             last_name:Joi.string().min(1).max(255).truncate().alphanum().required(),
@@ -25,16 +33,17 @@ class User {
 
     static async createUser(user) {
         return new Promise(async (resolve,reject) => {
-            let newUser = {...user};
-            try {
+            let newUser = {...user}; // Creating a copy of the user object to avoid mutation.
+            try { // Validating the new user data using Joi schema.
                 await User.userValidationSchema().validateAsync(newUser);
             } catch (error) {
-                return reject(error);
+                return reject(error); // Handling validation error and rejecting the promise.
             }
 
+            // Inserting new user into the database.
             db.query("INSERT INTO Users SET ?", newUser,
                 (err, res) => {
-                    if (err) {
+                    if (err) { // Error handling
                         console.log(err);
                         return reject(err);
                     }
@@ -51,9 +60,10 @@ class User {
 
 
     static findUserByEmail(email) {
+        // SQL query string to fetch a user by email address.
         return new Promise((resolve,reject) => {
             db.query(`SELECT user_id,first_name,last_name,email,password FROM Users WHERE email='${email}'`, (err,res) => {
-                if (err) {
+                if (err) { // Error handling
                     console.log(err);
                     return reject(err);
                 }
@@ -65,6 +75,7 @@ class User {
 
     static findUserById(id) {
         return new Promise((resolve,reject) => {
+            // SQL query string to fetch a user by their ID.
             db.query(`SELECT CONCAT(first_name,' ',last_name) as user_name,user_id,email,wallet_address,private_key FROM Users WHERE user_id='${id}'`, (err,res) => {
                 if (err) {
                     console.log(err);

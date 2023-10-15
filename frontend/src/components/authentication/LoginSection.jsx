@@ -107,7 +107,7 @@ const LoginSection = ({authStatus, setAuthStatus}) => {
             />
             {errMsg !== "" && <p className="error-notice">{errMsg}</p>}
             {/* Login Button */}
-            <button type ="submit" className="btn-submit" > login</button>
+            <button type ="submit" className="btn-submit" > Login</button>
         </form>
     );
 }

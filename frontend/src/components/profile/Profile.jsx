@@ -1,5 +1,5 @@
 /*
-* File name: Cart.jsx
+* File name: Profile.jsx
 * Author: Dang Khanh Toan Nguyen
 * StudentID: 103797499
 * Last date modified: 03/09/2023
