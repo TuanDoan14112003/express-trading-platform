@@ -90,7 +90,7 @@ function DepositForm({opened, setDepositForm}) {
                 {successMsg !== "" && <div className="succes-notice">{successMsg}</div>}
                 <div>
                     <Button onClick={handleDeposit} className="purchase-button" >Deposit</Button>
-                    <Button onClick={() => {setDepositForm(false); setErrMsg(""); setSuccessMsg("")}} className="cancel-button">Cancel</Button>
+                    <Button onClick={() => {setDepositForm(false); setErrMsg(""); setSuccessMsg("")}} className="cancel-button">Close</Button>
                 </div>
             </form>
 
