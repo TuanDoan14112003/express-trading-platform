@@ -85,7 +85,6 @@ function Filter({clicked,setFilter}) {
             setErrMsg("Need to choose at least 1 feature to filter")//if there is none set error
         }
         else{
-            queryString += "&availability=true"; //just fecth assets available for trading
             axios.get(`${baseURL}?${queryString}`)
                 .then((response) => {
                     console.log(response.data);

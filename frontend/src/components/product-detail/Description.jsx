@@ -13,7 +13,7 @@ import CheckoutForm from "./CheckoutForm";
 import { useCookies } from "react-cookie";
 import axios from "axios";
 // Description component receives product details as props
-const Description = ({product,id,owner_id,date, name, price, category, seller, description = "lorem"}) => {
+const Description = ({product,id,owner_id,date, name, price, category, seller, description = "lorem", available}) => {
     const [checkoutForm, setCheckoutForm] = useState(false); //state to keep state of opeing the checkout form
     const [checkUser,setCheckUser] = useState(false); //keep track whether user has the right to purchase the item or not
     const [cookies, setCookie] = useCookies(["user"]); //get the cookie
@@ -53,7 +53,7 @@ const Description = ({product,id,owner_id,date, name, price, category, seller, d
                 {description} 
             </div>
              {/* Buy button container only allow if user has the right*/}
-             {authStatus && checkUser &&  <div className="container-button">
+             {authStatus && checkUser && available &&  <div className="container-button">
                 <Button onClick={() => setCheckoutForm(true)}>Buy</Button>
             </div>}
            
