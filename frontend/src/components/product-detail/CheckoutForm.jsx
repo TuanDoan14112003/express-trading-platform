@@ -66,7 +66,7 @@ function CheckoutForm({opened, setCheckoutForm,product}) {
     return opened ? (
         <div className="checkout-form">
             <form className="checkout">
-                <h2>Confirm to Buy This Asset</h2>
+                <h2>Confirm To Buy This Asset</h2>
                 <Input  type="text" readOnly={true} value={product.name}  name="first-name" label="Asset Name"/>
                 <Input type="text"  readOnly value ={`${product.price} ETH`}  name="last-name" label="Price"/>
                 <Input type="text" readOnly value={product.description} name="address" label="Description"/>

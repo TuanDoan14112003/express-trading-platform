@@ -1,7 +1,14 @@
+/*
+filename: Transaction.js
+Author: Anh Tuan Doan
+StudentId: 103526745
+last date modified: 03/09/2023
+*/
 const db = require("./DB");
 const Joi = require("joi");
 class Transaction {
     constructor(transaction_hash,buyer_id,seller_id,asset_id) {
+        // Initializing properties for the Transaction instance.
         this.transaction_hash = transaction_hash;
         this.buyer_id = buyer_id;
         this.seller_id = seller_id;
@@ -9,6 +16,7 @@ class Transaction {
     }
 
     static getValidationSchema = () => Joi.object({
+        // Returning a Joi object schema for transaction data validation
         transaction_hash: Joi.string().required(),
         buyer_id: Joi.number().sign("positive").required(),
         seller_id: Joi.number().sign("positive").required(),
@@ -17,13 +25,14 @@ class Transaction {
 
     static createTransaction(transaction, callback) {
         return new Promise(async (resolve,reject) => {
+            // Creating a copy of the transaction object to avoid mutation.
             let newTransaction = {...transaction};
-            try {
+            try { // Validating the new transaction data using Joi schema.
                 await Transaction.getValidationSchema().validateAsync(newTransaction);
             } catch (error) {
-                return reject(error);
+                return reject(error);// Handling validation error and rejecting the promise.
             }
-
+            // Inserting new transaction into the database.
             db.query("INSERT INTO Transactions SET ?", newTransaction,
                 async (err, res) => {
                     if (err) {
@@ -37,6 +46,7 @@ class Transaction {
     }
 
     static getAllTransactions(user_id,callback) {
+        // SQL query string to fetch transactions involving the specified user.
         return new Promise((resolve,reject) => {
             db.query(`SELECT
                     t.transaction_hash,
@@ -58,7 +68,7 @@ class Transaction {
                 OR 
                     s.user_id = ${user_id}`,
                 (err, res) => {
-                    if (err) {
+                    if (err) { // Error handling
                         console.log(err);
                         return reject(null);
                     }

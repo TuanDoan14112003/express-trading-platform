@@ -1,18 +1,18 @@
+/*
+filename: AuthenticationRoutes.js
+Author: Anh Tuan Doan
+StudentId: 103526745
+last date modified: 03/09/2023
+*/
 const express = require("express");
 const authenticationController = require("./../controllers/AuthenticationController");
-// const transactionController = require("./../controllers/TransactionController");
-const router = express.Router();
-// router.route("/users/:id")
-//     .get(authenticationController.getOneUser);
+const router = express.Router(); // Router Initialization
 
-router.route("/register")
+router.route("/register") // Registration Route
     .post(authenticationController.register)
 
-router.route("/login")
+router.route("/login") // Login Route
     .post(authenticationController.login)
 
-// router.route("/users/:id/transactions")
-//     .get(transactionController.getAllTransactions);
-
-
+// Exporting Router
 module.exports = router;
