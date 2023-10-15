@@ -23,27 +23,27 @@ import LoadingSpinner from "../common/LoadingSpinner";
 
 function Profile() {
     // State to control the visibility of the CheckoutForm component
-    const [depositForm, setDepositForm] = useState(false);
-    const [cookies, setCookie] = useCookies(["user"]);
-    const [userData,setUserData] = useState(null);
-    const [balance, setBalance] = useState(800);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [depositForm, setDepositForm] = useState(false); //state keep check when the form is open
+    const [cookies, setCookie] = useCookies(["user"]); //get cookie
+    const [userData,setUserData] = useState(null); //fecth user data
+    const [balance, setBalance] = useState(0); //balance of the user
+    const [loading, setLoading] = useState(true); //loading state
+    const [error, setError] = useState(null); //error state
     const navigate = useNavigate();
-    const isAuthenticated = () => {
+    const isAuthenticated = () => { //check whether the user is login
         return cookies.jwt_token ? true : false;
     };
     const [authStatus, setAuthStatus] = useState(isAuthenticated());
-    const config = {
+    const config = { //send access token with api
         headers: { Authorization: `Bearer ${cookies.jwt_token}` }
     };
     const fetchBalance = async () => {
-        if(isAuthenticated)
+        if(isAuthenticated) //just fecth when already authenticated
         {
             try{
                 const res_balance = await axios.get("http://localhost:8000/api/users/balance", config);
                 let num = parseFloat(res_balance.data.data.balance);
-                setBalance(num.toFixed(2));        
+                setBalance(num.toFixed(2)); //round to 2 places after decimal 
             }
             catch (err){
                 setError(err);
@@ -57,7 +57,7 @@ function Profile() {
             const fetchUserAsset = async () =>{
                 axios.get("http://localhost:8000/api/users/profile",config).then(res=>{
                     setUserData(res.data.data.user);
-                }).catch(err=>{
+                }).catch(err=>{ 
                     setError(err);
                     setLoading(false);
                     console.log(err);
@@ -67,8 +67,8 @@ function Profile() {
             fetchUserAsset();
             setLoading(false);
         }
-    }, [depositForm]);
-    if(!authStatus){
+    }, [depositForm]); //re-fectch user data whenever the form is closed
+    if(!authStatus){ //do not allow access if not login
         return (
             <div className="center-screen">
                 <h1>You need to login to access this page!</h1>
@@ -76,14 +76,14 @@ function Profile() {
             </div>
         )
     }
-    if(loading)
+    if(loading) //loading state
     {
         return  <div className="center-screen">
                     <LoadingSpinner/>
                     <h1>Loading ...</h1>
                 </div>;
     }
-    if(error){
+    if(error){ //error state
         return <div className="center-screen">
                     <LoadingSpinner/>
                     <p className="error-message">Error: {error.message}<br/> Try to login again</p>

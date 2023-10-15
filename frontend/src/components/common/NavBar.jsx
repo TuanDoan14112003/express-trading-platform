@@ -48,7 +48,7 @@ function NavBar({authStatus, setAuthStatus}) {
         
         // Assuming your API endpoint looks something like this
         
-            navigate(`/marketplace?name=${searchValue}&availability=true`);  // Navigate to Marketplace after setting the search value
+            navigate(`/marketplace?name=${searchValue.trim()}&availability=true`);  // Navigate to Marketplace after setting the search value
     };
     const handleKeyPress = (event) => {
         if (event.key === "Enter") {
