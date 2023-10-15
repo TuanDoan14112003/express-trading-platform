@@ -12,19 +12,19 @@ import { useCookies } from "react-cookie";
 import {useState} from "react";
 
 function DepositForm({opened, setDepositForm}) {
-    const [errMsg,setErrMsg] = useState("");
-    const [successMsg,setSuccessMsg] = useState("");
-    const [cookies, setCookie] = useCookies(["user"]);
-    const [cardNumber, setCardNumber] = useState('');
-    const [expiryDate, setExpiryDate] = useState('');
-    const [cvv, setCvv] = useState('');
-    const [amount,setAmount] = useState(0);
-    const [cardholderName, setCardholderName] = useState('');
-    const config = {
+    const [errMsg,setErrMsg] = useState(""); //error message
+    const [successMsg,setSuccessMsg] = useState(""); //success message
+    const [cookies, setCookie] = useCookies(["user"]); //get cookie
+    const [cardNumber, setCardNumber] = useState(''); //store card number
+    const [expiryDate, setExpiryDate] = useState(''); //store expirydate
+    const [cvv, setCvv] = useState(''); //store cvv
+    const [amount,setAmount] = useState(0);//store amount
+    const [cardholderName, setCardholderName] = useState('');//store card holder name
+    const config = { //config to send access token to api
         headers: { Authorization: `Bearer ${cookies.jwt_token}`
     }
     };
-    const resetAll = ()=>{
+    const resetAll = ()=>{ //reset all state when successfully deposit or close the form
         setCardNumber("");
         setExpiryDate("");
         setCvv("");
@@ -34,7 +34,7 @@ function DepositForm({opened, setDepositForm}) {
     }
     const handleDeposit = (evt)=>{
         evt.preventDefault();
-        axios.put("http://localhost:8000/api/users/balance",{
+        axios.put("http://localhost:8000/api/users/balance",{ //api to deposit
             "amount": amount,
             "card_number": cardNumber,
             "card_holder": cardholderName,
@@ -42,22 +42,22 @@ function DepositForm({opened, setDepositForm}) {
             "cvv": cvv
             },config).then(res=>{
                 console.log(res);
-                setErrMsg("");
+                setErrMsg(""); //reset all error message
                 setSuccessMsg("You successfully depositted");
                 resetAll();
             })
             .catch(err=>{
                 console.log(err)
-                if(err.response ? true: false)
+                if(err.response ? true: false) //axios error
                 {
                     setErrMsg(err.response.data.message)
                 }
-                else{
+                else{//other error
                     setErrMsg(err.message)
                 }
             })
     }
-    return opened ? (
+    return opened ? ( //just render when it is in opened state
         <div className="checkout-form">
             <form className="checkout">
                 <h2 className="header-deposit">Input Your Card to Deposit</h2>
@@ -90,6 +90,7 @@ function DepositForm({opened, setDepositForm}) {
                 {successMsg !== "" && <div className="succes-notice">{successMsg}</div>}
                 <div>
                     <Button onClick={handleDeposit} className="purchase-button" >Deposit</Button>
+                    {/* reset all state when closing */}
                     <Button onClick={() => {setDepositForm(false); setErrMsg(""); setSuccessMsg("")}} className="cancel-button">Close</Button>
                 </div>
             </form>

@@ -52,9 +52,9 @@ const Register = () => {
         {
             setErrMsg("");
             axios.post("http://localhost:8000/api/auth/register/",{ //api to register
-                "first_name": evt.target.firstname.value,
-                "last_name": evt.target.lastname.value,
-                "email": evt.target.email.value, 
+                "first_name": evt.target.firstname.value.trim(),
+                "last_name": evt.target.lastname.value.trim(),
+                "email": evt.target.email.value.trim(), 
                 "password": evt.target.password.value,
             }).then(res => {
                 console.log(res)
