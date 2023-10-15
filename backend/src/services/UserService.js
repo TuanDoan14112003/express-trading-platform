@@ -123,31 +123,29 @@ exports.getBalanceByUserId = async (id) => { // Fetching the Ethereum balance of
 }
 // Depositing cryptocurrency to a user’s wallet after validating their credit card information.
 exports.depositCoinsToUserBalance = async (user_id,creditCardData) => {
-    await creditCardValidation.validateAsync(creditCardData);
-    const user = await exports.findUserById(user_id);
-    const accounts = await web3.eth.getAccounts();
+    await creditCardValidation.validateAsync(creditCardData); // Validate credit card data
+    const user = await exports.findUserById(user_id); // Retrieve user by ID
+    const accounts = await web3.eth.getAccounts(); // Get blockchain accounts
     let account_number = 0;
     while (true) {
         if (account_number === 10) {
-            throw new CoinLimitReached();
+            throw new CoinLimitReached(); // Limit accounts used to 10
         }
         try {
             await web3.eth.sendTransaction({
                 from: accounts[account_number],
-                to: user.wallet_address,
-                value: web3.utils.toWei(creditCardData.amount,"ether"),
+                to: user.wallet_address, // Send to user wallet
+                value: web3.utils.toWei(creditCardData.amount,"ether"),  // Convert to Wei and send
             });
             return;
         } catch (error) {
             if (error.reason.includes("insufficient balance")) {
-                account_number++;
+                account_number++; // Try next account on insufficient balance
             } else {
-                throw error;
+                throw error;// Throw on other errors
             }
         }
     }
-
-
 
 }
 

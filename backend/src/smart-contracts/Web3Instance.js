@@ -1,4 +1,9 @@
-
+/*
+filename: Web3Instance.js
+Author: Anh Tuan Doan
+StudentId: 103526745
+last date modified: 03/09/2023
+*/
 const {networks} = require("./../../truffle-config");
 const { Web3 } = require('web3');
 
