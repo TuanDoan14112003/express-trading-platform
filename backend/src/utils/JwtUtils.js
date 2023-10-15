@@ -2,7 +2,7 @@
 filename: JwtUtils.js
 Author: Anh Tuan Doan
 StudentId: 103526745
-last date modified: 03/09/2023
+last date modified: 15/10/2023
 */
 const jwt = require('jsonwebtoken');
 const TOKEN_SECRET = require("./../configs/JwtConfig").TOKEN_SECRET;

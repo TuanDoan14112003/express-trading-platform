@@ -1,3 +1,9 @@
+/*
+filename: LoadinSpinner.jsx
+Author: Gia Hung Tran
+StudentId: 103509199
+last date modified: 15/10/2023
+*/
 @keyframes spinner {
     0% {
       transform: rotate(0deg);

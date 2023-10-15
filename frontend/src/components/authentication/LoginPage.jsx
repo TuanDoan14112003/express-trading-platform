@@ -2,7 +2,7 @@
 filename: LoginPage.jsx
 Author: Gia Hung Tran
 StudentId: 103509199
-last date modified: 03/09/2023
+last date modified: 15/10/2023
 */
 // Importing necessary modules and components
 import React, { useState, useEffect } from "react";  // Combined the React and useState imports

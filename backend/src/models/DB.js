@@ -2,7 +2,7 @@
 filename: DB.js
 Author: Anh Tuan Doan
 StudentId: 103526745
-last date modified: 03/09/2023
+last date modified: 15/10/2023
 */
 const mysql = require("mysql");
 const dbConfig = require("../configs/DBConfig");

@@ -2,7 +2,7 @@
 filename: TransactionService.js
 Author: Anh Tuan Doan
 StudentId: 103526745
-last date modified: 03/09/2023
+last date modified: 15/10/2023
 */
 const Transaction = require("./../models/Transaction")
 exports.createTransaction = async (transaction_hash,buyer_id,seller_id,asset_id) => {

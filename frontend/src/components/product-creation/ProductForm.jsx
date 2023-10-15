@@ -2,7 +2,7 @@
 filename: ProductForm.jsx
 Author: Anh Tuan Doan
 StudentId: 103526745
-last date modified: 03/09/2023
+last date modified: 15/10/2023
 */
 
 // Importing required components and hooks
