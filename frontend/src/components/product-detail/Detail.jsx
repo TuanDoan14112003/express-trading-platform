@@ -77,6 +77,7 @@ const Detail = () => {
                 seller={product.owner_name} 
                 description= {product.description} 
                 date = {product.creation_date}
+                available = {ProductImage.is_available}
             />
         </div>
     );
