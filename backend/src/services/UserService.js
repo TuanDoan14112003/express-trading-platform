@@ -24,7 +24,16 @@ const creditCardValidation = Joi.object().keys({
         'string.pattern.base': 'CVV must contain only numbers',
     })
 });
-// Custom error class to handle invalid credentials.
+
+
+class CoinLimitReached extends Error {
+    constructor() {
+        super("Maximum coin limit reached. You must redeploy the project to reset the limit");
+        this.name = "CoinLimitReached";
+    }
+}
+
+
 class InvalidCredentialsError extends Error {
     constructor() {
         super("Invalid credentials"); // Providing a default error message.
@@ -114,21 +123,36 @@ exports.getBalanceByUserId = async (id) => { // Fetching the Ethereum balance of
 }
 // Depositing cryptocurrency to a user’s wallet after validating their credit card information.
 exports.depositCoinsToUserBalance = async (user_id,creditCardData) => {
-    await creditCardValidation.validateAsync(creditCardData); // Validating the provided credit card data
-    const user = await exports.findUserById(user_id); // Fetching the user data.
-    const accounts = await web3.eth.getAccounts(); // Getting Ethereum accounts from the Web3 instance.
+    await creditCardValidation.validateAsync(creditCardData);
+    const user = await exports.findUserById(user_id);
+    const accounts = await web3.eth.getAccounts();
+    let account_number = 0;
+    while (true) {
+        if (account_number === 10) {
+            throw new CoinLimitReached();
+        }
+        try {
+            await web3.eth.sendTransaction({
+                from: accounts[account_number],
+                to: user.wallet_address,
+                value: web3.utils.toWei(creditCardData.amount,"ether"),
+            });
+            return;
+        } catch (error) {
+            if (error.reason.includes("insufficient balance")) {
+                account_number++;
+            } else {
+                throw error;
+            }
+        }
+    }
 
-    // Sending a transaction to deposit Ether to the user’s wallet, 
-    // converting the amount from Ether to Wei for transaction compatibility.
-    await web3.eth.sendTransaction({
-        from: accounts[0],
-        to: user.wallet_address,
-        value: web3.utils.toWei(creditCardData.amount,"ether"),
-    });
+
 
 }
 
 // Exposing errors to be utilized in other modules.
 exports.InvalidCredentialsError = InvalidCredentialsError;
 exports.UserNotFound = UserNotFound;
+exports.CoinLimitReached = CoinLimitReached;
 
