@@ -42,6 +42,17 @@ CREATE TABLE Transactions (
     FOREIGN KEY (seller_id) REFERENCES Users(user_id)
 );
 
+-- Indexing DigitalAssets
+CREATE INDEX idx_owner_id ON DigitalAssets(owner_id);
+CREATE INDEX idx_asset_name ON DigitalAssets(name);
+CREATE INDEX idx_asset_category ON DigitalAssets(category);
+CREATE INDEX idx_is_available ON DigitalAssets(is_available);
+
+-- Indexing Transactions
+CREATE INDEX idx_asset_id ON Transactions(asset_id);
+CREATE INDEX idx_buyer_id ON Transactions(buyer_id);
+CREATE INDEX idx_seller_id ON Transactions(seller_id);
+
 
 DROP USER IF EXISTS 'trading-platform-admin'@'localhost';
 CREATE USER 'trading-platform-admin'@'localhost' IDENTIFIED WITH mysql_native_password BY'12345678';
