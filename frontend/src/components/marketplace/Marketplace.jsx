@@ -26,7 +26,7 @@ function Marketplace() {
             fullURL = `${apiUrl}?availability=true`; //just fetch assets available for trading
         }
         else{
-            fullURL = `${apiUrl}${location.search}`; //extract the sort query
+            fullURL = `${apiUrl}${location.search}&availability=true`; //extract the sort query
         }
         axios.get(fullURL)
             .then(response => {
